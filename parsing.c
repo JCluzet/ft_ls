@@ -1,19 +1,13 @@
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stddef.h>
-#include <stdio.h>
+#include "ft_ls.h"
 
 void parse_options(int argc, char **argv, char ***files, bool *options)
 {
-
     // if argc is 1, file is the current directory
     if (argc == 1)
     {
         *files = (char **)malloc(sizeof(char *) * 2);
         (*files)[0] = ft_strdup(".");
         (*files)[1] = NULL;
-        // printf
-        printf("VAMOS\n");
         return;
     }
     // parse if there is an option (between - and a letter)
@@ -34,7 +28,7 @@ void parse_options(int argc, char **argv, char ***files, bool *options)
                 else if (argv[i][j] == 't')
                     options[4] = true;
                 else 
-                    printf("! option -%c is not working on ft_ls !\n", argv[i][j]);
+                    printf("! option -%c is not working on ft_ls project !\n", argv[i][j]);
             }
         }
         else
@@ -61,4 +55,11 @@ void parse_options(int argc, char **argv, char ***files, bool *options)
             }
         }
     }
+        // if there is no file, file is the current directory
+        if (!*files)
+        {
+            *files = (char **)malloc(sizeof(char *) * 2);
+            (*files)[0] = ft_strdup(".");
+            (*files)[1] = NULL;
+        }
 }

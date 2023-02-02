@@ -8,13 +8,16 @@
 ################################################################################
 
 NAME        := ls
-CC        := gcc
+CC        := clang
 FLAGS    := -Wall -Wextra -Werror 
 ################################################################################
 #                                 PROGRAM'S SRCS                               #
 ################################################################################
 
-SRCS        :=      main.c
+SRCS        :=      parsing.c \
+                          ft_printf.c \
+                          utils.c \
+                          main.c \
                           
 OBJS        := $(SRCS:.c=.o)
 
@@ -35,12 +38,9 @@ CYAN 		:= \033[1;36m
 RM		    := rm -f
 
 ${NAME}:	${OBJS}
-			@echo "Compilation of LIBFT..."
-			@make -C libft
-			@echo "$(GREEN)LIBFT compiled ✔️"
 			@echo "$(GREEN)Compilation ${CLR_RMV}of ${YELLOW}$(NAME) ${CLR_RMV}..."
-			@gcc -o ls ${SRCS} libft/libft.a
-			@echo "$(GREEN)$(NAME) compiled ✔️"
+			${CC} ${FLAGS} -o ${NAME} -fsanitize=address -g3 ${OBJS}
+			@echo "$(GREEN)$(NAME) created[0m ✔️"
 
 all:		${NAME}
 
@@ -51,6 +51,8 @@ clean:
 			@ echo "$(RED)Deleting $(CYAN)$(NAME) $(CLR_RMV)objs ✔️"
 
 fclean:		clean
+			@ ${RM} ${NAME}
+			@ echo "$(RED)Deleting $(CYAN)$(NAME) $(CLR_RMV)binary ✔️"
 
 re:			fclean all
 
