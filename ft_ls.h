@@ -8,11 +8,14 @@
 #include <stdlib.h>
 // include write
 #include <unistd.h>
+// include opendir
+#include <dirent.h>
 
 void parse_options(int argc, char **argv, char ***files, bool *options);
 int ft_printf(const char *format, ...);
 
 // UTILS FUNCTIONS
+int ft_strcmp(char *s1, char *s2);
 void ft_putstr(char *str);
 void ft_putnbr(int n);
 void ft_putchar(char c);

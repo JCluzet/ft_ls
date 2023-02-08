@@ -1,5 +1,35 @@
 #include "ft_ls.h"
 
+void show_options(bool *options, char **files)
+{
+    // print the options
+    ft_printf("Parsing : \n\n");
+    ft_printf("options : ");
+    for (int i = 0; i < 5; i++)
+    {
+        if (options[i])
+        {
+            if (i == 0)
+                ft_printf("l, ");
+            else if (i == 1)
+                ft_printf("R, ");
+            else if (i == 2)
+                ft_printf("a, ");
+            else if (i == 3)
+                ft_printf("r, ");
+            else if (i == 4)
+                ft_printf("t, ");
+        }
+    }
+    if (!options[0] && !options[1] && !options[2] && !options[3] && !options[4])
+        ft_printf("none\n");
+    else
+        ft_printf("\b\b  \n");
+    for (int i = 0; files && files[i]; i++)
+        ft_printf("files[%d] = %s\n", i, files[i]);
+    ft_printf("\n\n");
+}
+
 void parse_options(int argc, char **argv, char ***files, bool *options)
 {
     // if argc is 1, file is the current directory
