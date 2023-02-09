@@ -1,6 +1,6 @@
 #include "ft_ls.h"
 
-int display_system(char **files, bool *options)
+int display_system(char **files, bool *options, bool display)
 {
     int number_of_files = 0;
     int i = 0;
@@ -10,7 +10,12 @@ int display_system(char **files, bool *options)
     while (files && files[i])
     {
         char **filestoprint = get_files(files[i]);
-        if (number_of_files > 1)
+        if (filestoprint == NULL)
+        {
+            i++;
+            continue;
+        }
+        if (number_of_files > 1 || display)
             printf("%s:\n", files[i]);
         show_files(filestoprint, options);
         if (number_of_files > 1 && files[i + 1])
