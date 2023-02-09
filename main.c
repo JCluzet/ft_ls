@@ -120,7 +120,7 @@ int main(int argc, char **argv)
 
     // printf("foldertoscan: %s\n", foldertoscan[0]);
 
-    display_system(foldertoscan, options, true);
+    display_system(foldertoscan, options, filestoprint[0] && foldertoscan[0]);
     // ft_printf("\n");
     return (0);
 }
