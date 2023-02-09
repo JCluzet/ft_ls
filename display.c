@@ -15,7 +15,7 @@ int display_system(char **files, bool *options, bool display)
             i++;
             continue;
         }
-        if (number_of_files > 1 || display)
+        if (number_of_files > 1 && display)
             printf("%s:\n", files[i]);
         show_files(filestoprint, options);
         if (number_of_files > 1 && files[i + 1])
