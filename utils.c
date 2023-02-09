@@ -1,23 +1,23 @@
 #include "ft_ls.h"
 
-char	*ft_strdup(char *s)
+char *ft_strdup(char *s)
 {
-	char	*moulitruc;
-	int		i;
-	int		u;
+    char *moulitruc;
+    int i;
+    int u;
 
-	i = 0;
-	u = (int)ft_strlen(s);
-	moulitruc = malloc(sizeof(char) * u + 1);
-	if (moulitruc == NULL)
-		return (NULL);
-	while (s[i])
-	{
-		moulitruc[i] = s[i];
-		i++;
-	}
-	moulitruc[i] = '\0';
-	return (moulitruc);
+    i = 0;
+    u = (int)ft_strlen(s);
+    moulitruc = malloc(sizeof(char) * u + 1);
+    if (moulitruc == NULL)
+        return (NULL);
+    while (s[i])
+    {
+        moulitruc[i] = s[i];
+        i++;
+    }
+    moulitruc[i] = '\0';
+    return (moulitruc);
 }
 
 int ft_strcmp(char *s1, char *s2)
@@ -28,7 +28,7 @@ int ft_strcmp(char *s1, char *s2)
     return (s1[i] - s2[i]);
 }
 
-char* ft_strrev(char *str)
+char *ft_strrev(char *str)
 {
     int i = 0;
     int j = ft_strlen(str) - 1;
@@ -44,7 +44,7 @@ char* ft_strrev(char *str)
     return (str);
 }
 
-char* ft_itoa(int n)
+char *ft_itoa(int n)
 {
     char *str;
     int i = 0;

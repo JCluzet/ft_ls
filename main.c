@@ -1,5 +1,4 @@
 #include "ft_ls.h"
-// #include "parsing.c"
 
 char **alphanumeric_sort(char **files)
 {
@@ -50,49 +49,16 @@ char **get_files(char *files)
     return (alphanumeric_sort(filestoprint));
 }
 
-
-void show_files(char **files, bool *options)
-{
-    for (int i = 0; files && files[i]; i++)
-    {
-        if (!options[2] && files[i][0] == '.')
-            continue;
-        ft_printf("%s", files[i]);
-        if (files[i + 1])
-        {
-            ft_putchar(' ');
-            for (int j = 7 - ft_strlen(files[i]); j > 0; j--)
-                ft_putchar(' ');
-        }
-    }
-    if (files)
-        ft_putchar('\n');
-}
-
 int main(int argc, char **argv)
 {
-    (void)argv;
-    (void)argc;
-    int i = 0;
-
-    // ft_printf("test");
     bool options[5] = {false, false, false, false, false};
     char **files = NULL;
 
-    // parse the options
     parse_options(argc, argv, &files, options);
 
-    // print the options
+    // print the parsing
     // show_options(options, files);
 
-    while (files && files[0])
-    {
-        // printf("files[0] = %s\n", files[0]);
-        char **filestoprint = get_files(files[i]);
-        show_files(filestoprint, options);
-        i++;
-        files++;
-    }
-
+    display_system(files, options);
     return (0);
 }

@@ -2,17 +2,17 @@
 #define FT_LS_H
 
 #include <stdarg.h>
-// #include "libft/libft.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-// include write
 #include <unistd.h>
-// include opendir
 #include <dirent.h>
 
 void parse_options(int argc, char **argv, char ***files, bool *options);
 int ft_printf(const char *format, ...);
+char **get_files(char *files);
+void show_files(char **files, bool *options);
+int display_system(char **files, bool *options);
 
 // UTILS FUNCTIONS
 int ft_strcmp(char *s1, char *s2);

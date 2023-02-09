@@ -18,6 +18,7 @@ SRCS        :=      parsing.c \
                           ft_printf.c \
                           utils.c \
                           main.c \
+						display.c \
                           
 OBJS        := $(SRCS:.c=.o)
 
