@@ -38,10 +38,10 @@ char **get_files(char *files)
         // check if the files is a file and not a directory and print it
         if (stat(files, &st) == -1)
         {
-            ft_printf("ls: %s: No such file or directory\n", files);
+            // ft_printf("ls: %s: No such file or directory\n", files);
             return (NULL);
         }
-        ft_printf("%s ", files);
+        // ft_printf("%s ", files);
         return (NULL);
     }
     while ((sd = readdir(dir)) != NULL)
@@ -68,17 +68,20 @@ int divide_files(char **files, char ***filestoprint, char ***foldertoscan)
     // use malloc to allocate the memory for the arrays
     while (files[i])
     {
-        if (stat(files[i], &st) == -1)
-        {
-            ft_printf("ls: %s: No such file or directory\n", files[i]);
-            i++;
-            continue;
-        }
+        // if (stat(files[i], &st) == -1)
+        // {
+        //     ft_printf("ls: %s: No such file or directory\n", files[i]);
+        //     i++;
+        //     continue;
+        // }
+        stat(files[i], &st);
         if (S_ISDIR(st.st_mode))
         {
             // use malloc to allocate the memory for the arrays, not realloc
             *foldertoscan = (char **)realloc(*foldertoscan, sizeof(char *) * (j + 1));
             (*foldertoscan)[j] = ft_strdup(files[i]);
+            // ft_printf("directories detected : %s", files[i]);
+            // ft_printf("%s ", files[i]);
             j++;
         }
         else
@@ -86,6 +89,7 @@ int divide_files(char **files, char ***filestoprint, char ***foldertoscan)
             *filestoprint = (char **)realloc(*filestoprint, sizeof(char *) * (k + 1));
             (*filestoprint)[k] = ft_strdup(files[i]);
             // ft_printf("%s ", files[i]);
+            // ft_printf("files detected : %s", files[i]);
             k++;
         }
         i++;
@@ -101,8 +105,12 @@ int main(int argc, char **argv)
 {
     bool options[5] = {false, false, false, false, false};
     char **files = NULL;
+    bool file_found = false;
 
-    parse_options(argc, alphanumeric_sort(argv), &files, options);
+    parse_options(argc - 1, argv + 1, &files, options);
+
+    // order the files
+    files = alphanumeric_sort(files);
 
     // print the parsing
     // show_options(options, files);
@@ -111,16 +119,32 @@ int main(int argc, char **argv)
 
     divide_files(files, &filestoprint, &foldertoscan);
 
-    // printf("filestoprint: %s\n", filestoprint[0]);
-    display_system(alphanumeric_sort(filestoprint), options, false);
-    if (filestoprint[0] && !foldertoscan[0])
+    filestoprint = alphanumeric_sort(filestoprint);
+
+
+
+    // first : display the no such file or directory error
+    display_not_found(files);
+
+    // second : display the files
+    file_found = display_system(alphanumeric_sort(filestoprint), options, false);
+
+    // third : display the directories
+
+
+
+
+    // printf("foldertoscan: %s", foldertoscan[0]);
+    if (file_found && !foldertoscan[0])
         ft_printf("\n");
-    else if (filestoprint[0] && foldertoscan[0])
+
+    // ft_printf("file_found: %d", file_found);
+    // ft_printf("foldertoscan[0]: %s", foldertoscan[0]);
+    if (file_found && foldertoscan[0])
         ft_printf("\n\n");
 
-    // printf("foldertoscan: %s\n", foldertoscan[0]);
-
     display_system(foldertoscan, options, filestoprint[0] && foldertoscan[0]);
-    // ft_printf("\n");
+    if (foldertoscan[0])
+        ft_printf("\n");
     return (0);
 }

@@ -14,6 +14,8 @@
 
 void parse_options(int argc, char **argv, char ***files, bool *options);
 int ft_printf(const char *format, ...);
+bool is_directory(char *file);
+int display_not_found(char **files);
 char **get_files(char *files);
 void show_files(char **files, bool *options);
 int display_system(char **files, bool *options, bool display);

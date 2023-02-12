@@ -32,8 +32,9 @@ void show_options(bool *options, char **files)
 
 void parse_options(int argc, char **argv, char ***files, bool *options)
 {
+    bool files_found = false;
     // if argc is 1, file is the current directory
-    if (argc == 1)
+    if (argc == 0)
     {
         *files = (char **)malloc(sizeof(char *) * 2);
         (*files)[0] = ft_strdup(".");
@@ -41,10 +42,12 @@ void parse_options(int argc, char **argv, char ***files, bool *options)
         return;
     }
     // parse if there is an option (between - and a letter)
-    for (int i = 1; i < argc; i++)
+    for (int i = 0; i < argc; i++)
     {
-        if (argv[i][0] == '-')
+        // ft_printf("check\n");
+        if (argv[i][0] == '-' && !files_found)
         {
+            // ft_printf("option found\n");
             for (int j = 1; argv[i][j]; j++)
             {
                 if (argv[i][j] == 'l')
@@ -63,6 +66,8 @@ void parse_options(int argc, char **argv, char ***files, bool *options)
         }
         else
         {
+            // ft_printf("file found\n");
+            files_found = true;
             // if there is a file, add it to the tab without using realloc
             if (!*files)
             {
