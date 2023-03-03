@@ -121,3 +121,52 @@ void ft_putchar(char c)
 {
     write(1, &c, 1);
 }
+
+char *ft_strjoin(char *s1, char *s2)
+{
+    char *str;
+    int i = 0;
+    int j = 0;
+    int len = ft_strlen(s1) + ft_strlen(s2);
+    str = (char *)malloc(sizeof(char) * (len + 1));
+    if (str == NULL)
+        return (NULL);
+    while (s1[i])
+    {
+        str[i] = s1[i];
+        i++;
+    }
+    while (s2[j])
+    {
+        str[i] = s2[j];
+        i++;
+        j++;
+    }
+    str[i] = '\0';
+    return (str);
+}
+
+char **chain_list_to_array(t_file *head)
+{
+    t_file *tmp;
+    char **array;
+    int i = 0;
+    int len = 0;
+
+    tmp = head;
+    while (tmp)
+    {
+        len++;
+        tmp = tmp->next;
+    }
+    array = (char **)malloc(sizeof(char *) * (len + 1));
+    tmp = head;
+    while (tmp)
+    {
+        array[i] = ft_strdup(tmp->path);
+        i++;
+        tmp = tmp->next;
+    }
+    array[i] = NULL;
+    return (array);
+}

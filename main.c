@@ -1,5 +1,7 @@
 #include "ft_ls.h"
 
+void print_files(t_file *head);
+
 char **alphanumeric_sort(char **files)
 {
     // sort the files in alphabetical order
@@ -101,11 +103,61 @@ int divide_files(char **files, char ***filestoprint, char ***foldertoscan)
     return (0);
 }
 
+void recursive_folder(t_file **head, bool *options)
+{
+    // if the last directory contain one directory or more, add them to the chain list
+    t_file *tmp = *head;
+    char **files = NULL;
+    char *path = NULL;
+    char **filestoprint = NULL;
+    char **foldertoscan = NULL;
+
+    while (tmp)
+    {
+        // if tmp is not the last element of the chain list, go to the next element
+        if (tmp->next != NULL)
+        {
+            tmp = tmp->next;
+            continue;
+        }
+        if (options[2])
+        {
+            if (ft_strcmp(tmp->name, ".") == 0 || ft_strcmp(tmp->name, "..") == 0)
+            {
+                tmp = tmp->next;
+                continue;
+            }
+        }
+        files = get_files(tmp->path);
+        while (*files)
+        {
+            if (ft_strcmp(*files, ".") == 0 || ft_strcmp(*files, "..") == 0)
+            {
+                files++;
+                continue;
+            }
+            path = ft_strjoin(tmp->path, "/");
+            path = ft_strjoin(path, *files);
+            if (is_directory(path))
+            {
+                add_file(head, *files, path);
+                recursive_folder(head, options);
+            }
+            free(path);
+            files++;
+        }
+        tmp = tmp->next;
+    }
+}
+
 int main(int argc, char **argv)
 {
     bool options[5] = {false, false, false, false, false};
     char **files = NULL;
     bool file_found = false;
+
+    // declare the chain list for the files
+    t_file *chain_list = NULL;
 
     parse_options(argc - 1, argv + 1, &files, options);
 
@@ -114,14 +166,30 @@ int main(int argc, char **argv)
 
     // print the parsing
     // show_options(options, files);
-    char** filestoprint = NULL;
-    char** foldertoscan = NULL;
+    char **filestoprint = NULL;
+    char **foldertoscan = NULL;
 
     divide_files(files, &filestoprint, &foldertoscan);
 
+    // add all foldertoscan into the chain list
+    while (*foldertoscan)
+    {
+        add_file(&chain_list, *foldertoscan, *foldertoscan);
+        // if there is some folder into the folder to scan, add them to the chain list
+        if (options[1])
+        {
+            // printf("there is an option\n");
+            recursive_folder(&chain_list, options);
+        }
+        foldertoscan++;
+    }
+
+    // transform the chain list into an array
+    foldertoscan = chain_list_to_array(chain_list);
+
+    // exit(0);
+
     filestoprint = alphanumeric_sort(filestoprint);
-
-
 
     // first : display the no such file or directory error
     display_not_found(files);
@@ -130,9 +198,6 @@ int main(int argc, char **argv)
     file_found = display_system(alphanumeric_sort(filestoprint), options, false);
 
     // third : display the directories
-
-
-
 
     // printf("foldertoscan: %s", foldertoscan[0]);
     if (file_found && !foldertoscan[0])

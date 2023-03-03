@@ -12,11 +12,33 @@
 #include <unistd.h>
 #include <dirent.h>
 
+
+// create a chained list to store the files
+typedef struct s_file
+{
+    char *name;
+    char* path;
+    struct s_file *next;
+} t_file;
+
+void add_file(t_file **head, char *name, char *path);
+// create a chained list to store the directories
+typedef struct s_dir
+{
+    char *name;
+    struct s_dir *next;
+} t_dir;
+
+void print_files(t_file *head);
+
+
 void parse_options(int argc, char **argv, char ***files, bool *options);
 int ft_printf(const char *format, ...);
 bool is_directory(char *file);
 int display_not_found(char **files);
+char **chain_list_to_array(t_file *head);
 char **get_files(char *files);
+char *ft_strjoin(char *s1, char *s2);
 void show_files(char **files, bool *options);
 int display_system(char **files, bool *options, bool display);
 

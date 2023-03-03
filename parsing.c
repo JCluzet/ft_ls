@@ -66,7 +66,7 @@ void parse_options(int argc, char **argv, char ***files, bool *options)
         }
         else
         {
-            // ft_printf("file found\n");
+            // // ft_printf("file found\n");
             files_found = true;
             // if there is a file, add it to the tab without using realloc
             if (!*files)

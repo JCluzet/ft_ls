@@ -19,6 +19,7 @@ SRCS        :=      parsing.c \
                           utils.c \
                           main.c \
 						display.c \
+						chain_list.c \
                           
 OBJS        := $(SRCS:.c=.o)
 
