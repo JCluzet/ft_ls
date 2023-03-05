@@ -41,7 +41,7 @@ int ft_printf(const char *format, ...);
 bool is_directory(char *file);
 int display_not_found(char **files);
 char **chain_list_to_array(t_file *head);
-char **get_files(char *files);
+char **get_files(char *files, bool *options);
 char *ft_strjoin(char *s1, char *s2);
 void show_files(char **files, bool *options, char *path);
 int display_system(char **files, bool *options, bool display);

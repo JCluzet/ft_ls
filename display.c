@@ -31,7 +31,7 @@ int display_system(char **files, bool *options, bool display)
     {
         // if (files[i][ft_strlen(files[i]) - 1] == '/')
         //     files[i][ft_strlen(files[i]) - 1] = '\0';
-        char **filestoprint = get_files(files[i]);
+        char **filestoprint = get_files(files[i], options);
         // ft_printf("BRA");
         if (filestoprint == NULL)
         {

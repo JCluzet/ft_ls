@@ -2,32 +2,40 @@
 
 void print_files(t_file *head);
 
-char **alphanumeric_sort(char **files)
+char **alphanumeric_sort(char **files, bool *options)
 {
-    // sort the files in alphabetical order
+    // sort the files in alphabetical order, if option -r is present, reverse the order
     int i = 0;
     int j = 0;
-    char *tmp = NULL;
+    char *tmp;
 
     while (files[i])
-    {
-        j = i + 1;
-        while (files[j])
-        {
-            if (ft_strcmp(files[i], files[j]) > 0)
-            {
-                tmp = files[i];
-                files[i] = files[j];
-                files[j] = tmp;
-            }
-            j++;
-        }
         i++;
+    for (int k = 0; k < i; k++)
+    {
+        for (j = 0; j < i - 1; j++)
+        {
+            if (ft_strcmp(files[j], files[j + 1]) > 0)
+            {
+                tmp = files[j];
+                files[j] = files[j + 1];
+                files[j + 1] = tmp;
+            }
+        }
+    }
+    if (options[3])
+    {
+        for (int k = 0; k < i / 2; k++)
+        {
+            tmp = files[k];
+            files[k] = files[i - k - 1];
+            files[i - k - 1] = tmp;
+        }
     }
     return (files);
 }
 
-char **get_files(char *files)
+char **get_files(char *files, bool *options)
 {
     DIR *dir;
     struct dirent *sd;
@@ -55,7 +63,7 @@ char **get_files(char *files)
     filestoprint = (char **)realloc(filestoprint, sizeof(char *) * (i + 1));
     filestoprint[i] = NULL;
     closedir(dir);
-    return (alphanumeric_sort(filestoprint));
+    return (alphanumeric_sort(filestoprint, options));
 }
 
 int divide_files(char **files, char ***filestoprint, char ***foldertoscan)
@@ -131,7 +139,7 @@ void recursive_folder(t_file **head, bool *options)
                 continue;
             }
         }
-        files = get_files(tmp->path);
+        files = get_files(tmp->path, options);
         while (*files)
         {
             if (ft_strcmp(*files, ".") == 0 || ft_strcmp(*files, "..") == 0)
@@ -168,7 +176,7 @@ int main(int argc, char **argv)
     parse_options(argc - 1, argv + 1, &files, options);
 
     // order the files
-    files = alphanumeric_sort(files);
+    files = alphanumeric_sort(files, options);
 
     // print the parsing
     // show_options(options, files);
@@ -195,13 +203,13 @@ int main(int argc, char **argv)
 
     // exit(0);
 
-    filestoprint = alphanumeric_sort(filestoprint);
+    filestoprint = alphanumeric_sort(filestoprint, options);
 
     // first : display the no such file or directory error
     display_not_found(files);
 
     // second : display the files
-    file_found = display_system(alphanumeric_sort(filestoprint), options, false);
+    file_found = display_system(alphanumeric_sort(filestoprint, options), options, false);
 
     // third : display the directories
 
