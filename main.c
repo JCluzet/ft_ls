@@ -115,6 +115,9 @@ void recursive_folder(t_file **head, bool *options)
     while (tmp)
     {
         // if tmp is not the last element of the chain list, go to the next element
+        // if tmo->name finish with a /, remove it to avoid error
+        // if (tmp->name[ft_strlen(tmp->name) - 1] == '/')
+        //     tmp->name[ft_strlen(tmp->name) - 1] = '\0';
         if (tmp->next != NULL)
         {
             tmp = tmp->next;
@@ -136,6 +139,9 @@ void recursive_folder(t_file **head, bool *options)
                 files++;
                 continue;
             }
+            // if there is a / at the end of the path, remove it 
+            // if (tmp->path[ft_strlen(tmp->path) - 1] == '/')
+            //     tmp->path[ft_strlen(tmp->path) - 1] = '\0';
             path = ft_strjoin(tmp->path, "/");
             path = ft_strjoin(path, *files);
             if (is_directory(path))
@@ -209,7 +215,7 @@ int main(int argc, char **argv)
         ft_printf("\n\n");
 
     display_system(foldertoscan, options, filestoprint[0] && foldertoscan[0]);
-    if (foldertoscan[0])
-        ft_printf("\n");
+    // if (foldertoscan[0])
+        // ft_printf("\n");
     return (0);
 }

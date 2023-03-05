@@ -1,6 +1,5 @@
 #include "ft_ls.h"
 
-
 int display_not_found(char **files)
 {
     // check if each file exists, if not print an error, if yes continue
@@ -30,6 +29,8 @@ int display_system(char **files, bool *options, bool display)
 
     while (files && files[i])
     {
+        // if (files[i][ft_strlen(files[i]) - 1] == '/')
+        //     files[i][ft_strlen(files[i]) - 1] = '\0';
         char **filestoprint = get_files(files[i]);
         // ft_printf("BRA");
         if (filestoprint == NULL)
@@ -42,13 +43,17 @@ int display_system(char **files, bool *options, bool display)
             i++;
             continue;
         }
-        
+
         files_found = 1;
-        if (number_of_files > 1 || display)
-            printf("%s:\n", files[i]);
-        show_files(filestoprint, options);
+        if (!(i == 0 && options[1]))
+        {
+            if (number_of_files > 1 || display)
+                printf("%s:\n", files[i]);
+            // if this is the first file and the -R option is set
+        }
+        show_files(filestoprint, options, files[i]);
         if (number_of_files > 1 && files[i + 1])
-            ft_printf("\n\n");
+            ft_printf("\n");
         i++;
     }
     return (files_found);
@@ -64,19 +69,27 @@ bool is_directory(char *file)
     return (false);
 }
 
-void show_files(char **files, bool *options)
+void show_files(char **files, bool *options, char *path)
 {
     int number_display = 0;
     for (int i = 0; files && files[i]; i++)
     {
         if (!options[2] && files[i][0] == '.')
             continue;
+        // COLORS
+        if (is_directory(ft_strjoin(ft_strjoin(path, "/"), files[i])))
+        {
+            ft_printf("%s", BLUE);
+        }
+        // if the file is an executalbe
+        else if (is_executable(ft_strjoin(ft_strjoin(path, "/"), files[i])))
+        {
+            ft_printf("%s", RED);
+        }
+
+
         ft_printf("%s", files[i]);
-        // if this file is a directory and the -R option is set, add it to the list of directories to scan
-        // if (options[1] && is_directory(files[i]))
-        // {
-        //     ft_printf("Find -R");
-        // }
+        ft_printf("%s", RESET);
         number_display++;
         if (files[i + 1])
         {
@@ -85,6 +98,8 @@ void show_files(char **files, bool *options)
                 ft_putchar(' ');
         }
     }
+    if (number_display > 0)
+        ft_printf("\n");
     // if (number_display > 0)
     //     ft_printf("\n");
 }

@@ -170,3 +170,14 @@ char **chain_list_to_array(t_file *head)
     array[i] = NULL;
     return (array);
 }
+
+// is_executable function
+bool is_executable(char *path)
+{
+    struct stat buf;
+    if (stat(path, &buf) == -1)
+        return (false);
+    if (buf.st_mode & S_IXUSR)
+        return (true);
+    return (false);
+}

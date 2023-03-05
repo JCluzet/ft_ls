@@ -12,6 +12,10 @@
 #include <unistd.h>
 #include <dirent.h>
 
+#define BLUE "\033[1;36m"
+#define RED "\033[1;31m"
+#define RESET "\033[0m"
+
 
 // create a chained list to store the files
 typedef struct s_file
@@ -30,7 +34,7 @@ typedef struct s_dir
 } t_dir;
 
 void print_files(t_file *head);
-
+bool is_executable(char *path);
 
 void parse_options(int argc, char **argv, char ***files, bool *options);
 int ft_printf(const char *format, ...);
@@ -39,7 +43,7 @@ int display_not_found(char **files);
 char **chain_list_to_array(t_file *head);
 char **get_files(char *files);
 char *ft_strjoin(char *s1, char *s2);
-void show_files(char **files, bool *options);
+void show_files(char **files, bool *options, char *path);
 int display_system(char **files, bool *options, bool display);
 
 // UTILS FUNCTIONS
