@@ -2,40 +2,43 @@
 
 void print_files(t_file *head);
 
-char **alphanumeric_sort(char **files, bool *options)
+char **alphanumeric_sort(char **files, char options[5])
 {
-    // sort the files in alphabetical order, if option -r is present, reverse the order
-    int i = 0;
-    int j = 0;
-    char *tmp;
+    // check the options one by one
+    // if there is a 't' option, sort by time
+    // if there is a 'r' option, reverse the order
+    // if there is no option, sort by alphabetical order
 
-    while (files[i])
-        i++;
-    for (int k = 0; k < i; k++)
+    for (int i = 0; options[i]; i++)
     {
-        for (j = 0; j < i - 1; j++)
+        if (options[i] == 't')
         {
-            if (ft_strcmp(files[j], files[j + 1]) > 0)
-            {
-                tmp = files[j];
-                files[j] = files[j + 1];
-                files[j + 1] = tmp;
-            }
+            // sort by time
+            // ft_printf("sort by time\n");
+            files = sort_by_time(files);
+        }
+        else if (options[i] == 'r')
+        {
+            // reverse the order
+            // ft_printf("reverse the order\n");
+        files = sort_by_alphabetical_order(files);
+            files = reverse_order(files);
         }
     }
-    if (options[3])
+
+    // if there is no option, sort by alphabetical order
+    if (!is_in(options, 't') && !is_in(options, 'r'))
     {
-        for (int k = 0; k < i / 2; k++)
-        {
-            tmp = files[k];
-            files[k] = files[i - k - 1];
-            files[i - k - 1] = tmp;
-        }
+        // ft_printf("sort by alphabetical order\n");
+        files = sort_by_alphabetical_order(files);
     }
+
+
+
     return (files);
 }
 
-char **get_files(char *files, bool *options)
+char **get_files(char *files, char options[5])
 {
     DIR *dir;
     struct dirent *sd;
@@ -111,7 +114,7 @@ int divide_files(char **files, char ***filestoprint, char ***foldertoscan)
     return (0);
 }
 
-void recursive_folder(t_file **head, bool *options)
+void recursive_folder(t_file **head, char options[5])
 {
     // if the last directory contain one directory or more, add them to the chain list
     t_file *tmp = *head;
@@ -131,7 +134,7 @@ void recursive_folder(t_file **head, bool *options)
             tmp = tmp->next;
             continue;
         }
-        if (options[2])
+        if (is_in(options, 'a'))
         {
             if (ft_strcmp(tmp->name, ".") == 0 || ft_strcmp(tmp->name, "..") == 0)
             {
@@ -166,7 +169,7 @@ void recursive_folder(t_file **head, bool *options)
 
 int main(int argc, char **argv)
 {
-    bool options[5] = {false, false, false, false, false};
+    char options[5] = {0};
     char **files = NULL;
     bool file_found = false;
 
@@ -190,7 +193,7 @@ int main(int argc, char **argv)
     {
         add_file(&chain_list, *foldertoscan, *foldertoscan);
         // if there is some folder into the folder to scan, add them to the chain list
-        if (options[1])
+        if (is_in(options, 'R'))
         {
             // printf("there is an option\n");
             recursive_folder(&chain_list, options);

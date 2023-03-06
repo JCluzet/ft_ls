@@ -16,7 +16,7 @@ int display_not_found(char **files)
     return (0);
 }
 
-int display_system(char **files, bool *options, bool display)
+int display_system(char **files, char options[5], bool display)
 {
     int number_of_files = 0;
     int files_found = 0;
@@ -37,7 +37,15 @@ int display_system(char **files, bool *options, bool display)
         {
             if (((dir = opendir(files[i])) == NULL) && (stat(files[i], &st) != -1))
             {
-                ft_printf("%s ", files[i]);
+                // if it's an executable, show RED and print it
+                if (is_executable(files[i]))
+                {
+                    ft_printf("%s", RED);
+                    ft_printf("%s", files[i]);
+                    ft_printf("%s", RESET);
+                }
+                else
+                    ft_printf("%s ", files[i]);
                 files_found = 1;
             }
             i++;
@@ -45,7 +53,7 @@ int display_system(char **files, bool *options, bool display)
         }
 
         files_found = 1;
-        if (!(i == 0 && options[1]))
+        if (!(i == 0 && is_in(options, 'R')))
         {
             if (number_of_files > 1 || display)
                 printf("%s:\n", files[i]);
@@ -69,12 +77,12 @@ bool is_directory(char *file)
     return (false);
 }
 
-void show_files(char **files, bool *options, char *path)
+void show_files(char **files, char options[5], char *path)
 {
     int number_display = 0;
     for (int i = 0; files && files[i]; i++)
     {
-        if (!options[2] && files[i][0] == '.')
+        if (!is_in(options, 'a') && files[i][0] == '.')
             continue;
         // COLORS
         if (is_directory(ft_strjoin(ft_strjoin(path, "/"), files[i])))

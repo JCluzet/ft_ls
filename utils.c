@@ -181,3 +181,123 @@ bool is_executable(char *path)
         return (true);
     return (false);
 }
+
+bool is_in(char *str, char c)
+{
+    int i = 0;
+    while (str[i])
+    {
+        if (str[i] == c)
+            return (true);
+        i++;
+    }
+    return (false);
+}
+
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <string.h>
+#include <errno.h>
+
+// Fonction de comparaison pour le tri
+int cmp_time(const char *a, const char *b) {
+    // what if the last modification file path between a and b
+    // if it's the same, we compare the file name
+    struct stat stat_a;
+    struct stat stat_b;
+    lstat(a, &stat_a);
+    lstat(b, &stat_b);
+
+    if (stat_a.st_mtime == stat_b.st_mtime) {
+        return strcmp(a, b);
+    }
+
+    // printf file a and b and her last modification time
+    printf("%s last modification time: %ld \t %s last modification time: %ld\n", a, stat_a.st_mtime, b, stat_b.st_mtime);
+
+    if (stat_a.st_mtime > stat_b.st_mtime) {
+        return -1;
+    } else {
+        return 1;
+    }
+
+}
+
+
+static void	swap_files(char **a, char **b)
+{
+	char *tmp;
+
+	tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
+
+char	**sort_by_time(char **files)
+{
+	if (!files)
+		return (NULL);
+	int i, j, n = 0;
+	while (files[n])
+		n++;
+	for (i = 0; i < n - 1; i++)
+	{
+		for (j = i + 1; j < n; j++)
+		{
+			struct stat stat_i, stat_j;
+			if (stat(files[i], &stat_i) == -1)
+				return (NULL);
+			if (stat(files[j], &stat_j) == -1)
+				return (NULL);
+			if (stat_i.st_mtime < stat_j.st_mtime ||
+				(stat_i.st_mtime == stat_j.st_mtime && stat_i.st_mtim.tv_nsec < stat_j.st_mtim.tv_nsec))
+				swap_files(&files[i], &files[j]);
+		}
+	}
+	return (files);
+}
+
+
+
+char **reverse_order(char **files)
+{
+    int i = 0;
+    int j = 0;
+    char *temp;
+    while (files[i])
+        i++;
+    i--;
+    while (j < i)
+    {
+        temp = files[j];
+        files[j] = files[i];
+        files[i] = temp;
+        j++;
+        i--;
+    }
+    return (files);
+}
+
+char **sort_by_alphabetical_order(char **files)
+{
+    int i = 0;
+    int j = 0;
+    char *temp;
+    while (files[i])
+        i++;
+    i--;
+    while (j < i)
+    {
+        if (ft_strcmp(files[j], files[j + 1]) > 0)
+        {
+            temp = files[j];
+            files[j] = files[j + 1];
+            files[j + 1] = temp;
+            j = 0;
+        }
+        else
+            j++;
+    }
+    return (files);
+}

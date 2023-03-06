@@ -1,6 +1,6 @@
 #include "ft_ls.h"
 
-void show_options(bool *options, char **files)
+void show_options(char options[5], char **files)
 {
     // print the options
     ft_printf("Parsing : \n\n");
@@ -9,16 +9,7 @@ void show_options(bool *options, char **files)
     {
         if (options[i])
         {
-            if (i == 0)
-                ft_printf("l, ");
-            else if (i == 1)
-                ft_printf("R, ");
-            else if (i == 2)
-                ft_printf("a, ");
-            else if (i == 3)
-                ft_printf("r, ");
-            else if (i == 4)
-                ft_printf("t, ");
+            ft_printf("%c, ", options[i]);
         }
     }
     if (!options[0] && !options[1] && !options[2] && !options[3] && !options[4])
@@ -30,9 +21,10 @@ void show_options(bool *options, char **files)
     ft_printf("\n\n");
 }
 
-void parse_options(int argc, char **argv, char ***files, bool *options)
+void parse_options(int argc, char **argv, char ***files, char options[5])
 {
     bool files_found = false;
+    int option_index = 0;
     // if argc is 1, file is the current directory
     if (argc == 0)
     {
@@ -50,16 +42,18 @@ void parse_options(int argc, char **argv, char ***files, bool *options)
             // ft_printf("option found\n");
             for (int j = 1; argv[i][j]; j++)
             {
-                if (argv[i][j] == 'l')
-                    options[0] = true;
-                else if (argv[i][j] == 'R')
-                    options[1] = true;
-                else if (argv[i][j] == 'a')
-                    options[2] = true;
-                else if (argv[i][j] == 'r')
-                    options[3] = true;
-                else if (argv[i][j] == 't')
-                    options[4] = true;
+                // if the option is 'a' and a is not already in the options 
+
+                if (argv[i][j] == 'l' && !is_in(options, 'l'))
+                    options[option_index++] = 'l';
+                else if (argv[i][j] == 'R' && !is_in(options, 'R'))
+                    options[option_index++] = 'R';
+                else if (argv[i][j] == 'a' && !is_in(options, 'a'))
+                    options[option_index++] = 'a';
+                else if (argv[i][j] == 'r' && !is_in(options, 'r'))
+                    options[option_index++] = 'r';
+                else if (argv[i][j] == 't' && !is_in(options, 't'))
+                    options[option_index++] = 't';
                 else 
                     printf("! option -%c is not working on ft_ls project !\n", argv[i][j]);
             }
@@ -90,6 +84,7 @@ void parse_options(int argc, char **argv, char ***files, bool *options)
             }
         }
     }
+    options[option_index] = '\0';
         // if there is no file, file is the current directory
         if (!*files)
         {
