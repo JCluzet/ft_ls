@@ -250,9 +250,15 @@ char	**sort_by_time(char **files)
 				return (NULL);
 			if (stat(files[j], &stat_j) == -1)
 				return (NULL);
+            #if defined(__APPLE__)
+            if (stat_i.st_mtimespec.tv_sec < stat_j.st_mtimespec.tv_sec ||
+                (stat_i.st_mtimespec.tv_sec == stat_j.st_mtimespec.tv_sec && stat_i.st_mtimespec.tv_nsec < stat_j.st_mtimespec.tv_nsec))
+                swap_files(&files[i], &files[j]);
+            #else
 			if (stat_i.st_mtime < stat_j.st_mtime ||
 				(stat_i.st_mtime == stat_j.st_mtime && stat_i.st_mtim.tv_nsec < stat_j.st_mtim.tv_nsec))
 				swap_files(&files[i], &files[j]);
+            #endif
 		}
 	}
 	return (files);

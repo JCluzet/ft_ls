@@ -8,22 +8,24 @@ char **alphanumeric_sort(char **files, char options[5])
     // if there is a 't' option, sort by time
     // if there is a 'r' option, reverse the order
     // if there is no option, sort by alphabetical order
+    files = sort_by_alphabetical_order(files);
 
-    for (int i = 0; options[i]; i++)
+    if (is_in(options, 'r') && is_in(options, 't'))
     {
-        if (options[i] == 't')
-        {
-            // sort by time
-            // ft_printf("sort by time\n");
-            files = sort_by_time(files);
-        }
-        else if (options[i] == 'r')
-        {
-            // reverse the order
-            // ft_printf("reverse the order\n");
-        files = sort_by_alphabetical_order(files);
-            files = reverse_order(files);
-        }
+        files = sort_by_time(files);
+        files = reverse_order(files);
+    }
+    else if (is_in(options, 't'))
+    {
+        // sort by time
+        // ft_printf("sort by time\n");
+        files = sort_by_time(files);
+    }
+    else if (is_in(options, 'r'))
+    {
+        // reverse the order
+        // ft_printf("reverse the order\n");
+        files = reverse_order(files);
     }
 
     // if there is no option, sort by alphabetical order
