@@ -1,234 +1,252 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "ft_ls.h"
+#include <stdbool.h>
+#include <string.h>
 
-void print_files(t_file *head);
-
-char **alphanumeric_sort(char **files, char options[5])
+// fill details about files
+void treat_files(node *head)
 {
-    // check the options one by one
-    // if there is a 't' option, sort by time
-    // if there is a 'r' option, reverse the order
-    // if there is no option, sort by alphabetical order
-    files = sort_by_alphabetical_order(files);
-
-    if (is_in(options, 'r') && is_in(options, 't'))
-    {
-        files = sort_by_time(files);
-        files = reverse_order(files);
-    }
-    else if (is_in(options, 't'))
-    {
-        // sort by time
-        // ft_printf("sort by time\n");
-        files = sort_by_time(files);
-    }
-    else if (is_in(options, 'r'))
-    {
-        // reverse the order
-        // ft_printf("reverse the order\n");
-        files = reverse_order(files);
-    }
-
-    // if there is no option, sort by alphabetical order
-    if (!is_in(options, 't') && !is_in(options, 'r'))
-    {
-        // ft_printf("sort by alphabetical order\n");
-        files = sort_by_alphabetical_order(files);
-    }
-
-
-
-    return (files);
-}
-
-char **get_files(char *files, char options[5])
-{
-    DIR *dir;
-    struct dirent *sd;
-    char **filestoprint = NULL;
-    int i = 0;
-    struct stat st;
-
-    if ((dir = opendir(files)) == NULL)
-    {
-        // check if the files is a file and not a directory and print it
-        if (stat(files, &st) == -1)
-        {
-            // ft_printf("ls: %s: No such file or directory\n", files);
-            return (NULL);
-        }
-        // ft_printf("%s ", files);
-        return (NULL);
-    }
-    while ((sd = readdir(dir)) != NULL)
-    {
-        filestoprint = (char **)realloc(filestoprint, sizeof(char *) * (i + 1));
-        filestoprint[i] = ft_strdup(sd->d_name);
-        i++;
-    }
-    filestoprint = (char **)realloc(filestoprint, sizeof(char *) * (i + 1));
-    filestoprint[i] = NULL;
-    closedir(dir);
-    return (alphanumeric_sort(filestoprint, options));
-}
-
-int divide_files(char **files, char ***filestoprint, char ***foldertoscan)
-{
-    int i = 0;
-    int j = 0;
-    int k = 0;
-    struct stat st;
-
-    // divide the files in two arrays, one for files and one for directories
-    // use stat to check if the file is a directory or not
-    // use malloc to allocate the memory for the arrays
-    while (files[i])
-    {
-        // if (stat(files[i], &st) == -1)
-        // {
-        //     ft_printf("ls: %s: No such file or directory\n", files[i]);
-        //     i++;
-        //     continue;
-        // }
-        stat(files[i], &st);
-        if (S_ISDIR(st.st_mode))
-        {
-            // use malloc to allocate the memory for the arrays, not realloc
-            *foldertoscan = (char **)realloc(*foldertoscan, sizeof(char *) * (j + 1));
-            (*foldertoscan)[j] = ft_strdup(files[i]);
-            // ft_printf("directories detected : %s", files[i]);
-            // ft_printf("%s ", files[i]);
-            j++;
-        }
-        else
-        {
-            *filestoprint = (char **)realloc(*filestoprint, sizeof(char *) * (k + 1));
-            (*filestoprint)[k] = ft_strdup(files[i]);
-            // ft_printf("%s ", files[i]);
-            // ft_printf("files detected : %s", files[i]);
-            k++;
-        }
-        i++;
-    }
-    *foldertoscan = (char **)realloc(*foldertoscan, sizeof(char *) * (j + 1));
-    (*foldertoscan)[j] = NULL;
-    *filestoprint = (char **)realloc(*filestoprint, sizeof(char *) * (k + 1));
-    (*filestoprint)[k] = NULL;
-    return (0);
-}
-
-void recursive_folder(t_file **head, char options[5])
-{
-    // if the last directory contain one directory or more, add them to the chain list
-    t_file *tmp = *head;
-    char **files = NULL;
-    char *path = NULL;
-    char **filestoprint = NULL;
-    char **foldertoscan = NULL;
-
+    node *tmp = head;
     while (tmp)
     {
-        // if tmp is not the last element of the chain list, go to the next element
-        // if tmo->name finish with a /, remove it to avoid error
-        // if (tmp->name[ft_strlen(tmp->name) - 1] == '/')
-        //     tmp->name[ft_strlen(tmp->name) - 1] = '\0';
-        if (tmp->next != NULL)
+        if (path_exists(tmp->path))
         {
-            tmp = tmp->next;
-            continue;
+            tmp->exist = true;
+            if (is_dir(tmp->path))
+                tmp->isDir = true;
+            else
+                tmp->isDir = false;
         }
-        if (is_in(options, 'a'))
-        {
-            if (ft_strcmp(tmp->name, ".") == 0 || ft_strcmp(tmp->name, "..") == 0)
-            {
-                tmp = tmp->next;
-                continue;
-            }
-        }
-        files = get_files(tmp->path, options);
-        while (*files)
-        {
-            if (ft_strcmp(*files, ".") == 0 || ft_strcmp(*files, "..") == 0)
-            {
-                files++;
-                continue;
-            }
-            // if there is a / at the end of the path, remove it 
-            // if (tmp->path[ft_strlen(tmp->path) - 1] == '/')
-            //     tmp->path[ft_strlen(tmp->path) - 1] = '\0';
-            path = ft_strjoin(tmp->path, "/");
-            path = ft_strjoin(path, *files);
-            if (is_directory(path))
-            {
-                add_file(head, *files, path);
-                recursive_folder(head, options);
-            }
-            free(path);
-            files++;
-        }
+        else
+            tmp->exist = false;
         tmp = tmp->next;
     }
 }
 
-int main(int argc, char **argv)
+// remove useless files (files that don't exist or are not directories)
+node *remove_useless_files(node *head)
 {
-    char options[5] = {0};
-    char **files = NULL;
-    bool file_found = false;
+    node *tmp = NULL;
 
-    // declare the chain list for the files
-    t_file *chain_list = NULL;
-
-    parse_options(argc - 1, argv + 1, &files, options);
-
-    // order the files
-    files = alphanumeric_sort(files, options);
-
-    // print the parsing
-    // show_options(options, files);
-    char **filestoprint = NULL;
-    char **foldertoscan = NULL;
-
-    divide_files(files, &filestoprint, &foldertoscan);
-
-    // add all foldertoscan into the chain list
-    while (*foldertoscan)
+    // create a new chain list, add all elements in head 1 by 1, except the useless ones
+    while (head)
     {
-        add_file(&chain_list, *foldertoscan, *foldertoscan);
-        // if there is some folder into the folder to scan, add them to the chain list
-        if (is_in(options, 'R'))
+        if (head->exist && head->isDir)
         {
-            // printf("there is an option\n");
-            recursive_folder(&chain_list, options);
+            if (tmp == NULL)
+            {
+                tmp = (node *)malloc(sizeof(node));
+                tmp->path = ft_strdup(head->path);
+                tmp->name = ft_strdup(head->name);
+                tmp->isDir = head->isDir;
+                for (int i = 0; i < 6; i++)
+                    tmp->options[i] = head->options[i];
+                tmp->exist = head->exist;
+                tmp->next = NULL;
+            }
+            else
+            {
+                node *current = tmp;
+                while (current->next)
+                    current = current->next;
+                current->next = (node *)malloc(sizeof(node));
+                current->next->path = ft_strdup(head->path);
+                current->next->name = ft_strdup(head->name);
+                for (int i = 0; i < 6; i++)
+                    current->next->options[i] = head->options[i];
+                current->next->isDir = head->isDir;
+                current->next->exist = head->exist;
+                current->next->next = NULL;
+            }
         }
-        foldertoscan++;
+        head = head->next;
     }
+    // free the old chain list
+    // free_node(head);
+    return (tmp);
+}
 
-    // transform the chain list into an array
-    foldertoscan = chain_list_to_array(chain_list);
+// return all folder/files find in the path
+node *find_folder(char *path, char options[6])
+{
+    node *head = NULL;
+    node *current = NULL;
+    node *previous = NULL;
+    DIR *dir;
+    struct dirent *sd;
+    dir = opendir(path);
+    while ((sd = readdir(dir)) != NULL)
+    {
+        if (sd->d_name[0] != '.' || is_in(options, 'a'))
+        {
+            current = (node *)malloc(sizeof(node));
+            current->path = ft_strjoin(path, "/");
+            current->path = ft_strjoin(current->path, sd->d_name);
+            current->name = ft_strdup(sd->d_name);
+            current->isDir = is_dir(current->path);
+            current->is_scan = false;
+            current->visited = false;
+            current->exist = 1;
+            for (int i = 0; i < 6; i++)
+                current->options[i] = options[i];
+            current->next = NULL;
+            if (head == NULL)
+                head = current;
+            else
+                previous->next = current;
+            previous = current;
+        }
+    }
+    head = sort_files(head);
+    return (head);
+}
+void recursive_option(node *head) {
+    node *tmp = head;
+    char *path = NULL;
+    node *last_node = NULL;
 
-    // exit(0);
+    while (tmp && tmp->visited)
+        tmp = tmp->next;
+    if (!tmp)
+        return;
+    last_node = tmp;
+    last_node->visited = true;
 
-    filestoprint = alphanumeric_sort(filestoprint, options);
+    // ft_printf("OK C CA:%s:\n", last_node->path);  
 
-    // first : display the no such file or directory error
-    display_not_found(files);
+    node *files = find_folder(last_node->path, last_node->options);
+    last_node->is_scan = true;
 
-    // second : display the files
-    file_found = display_system(alphanumeric_sort(filestoprint, options), options, false);
 
-    // third : display the directories
 
-    // printf("foldertoscan: %s", foldertoscan[0]);
-    if (file_found && !foldertoscan[0])
+    while (files) {
+        if (files->isDir) {
+            node *new_node = (node *)malloc(sizeof(node));
+            new_node->path = ft_strdup(files->path);
+            new_node->name = ft_strdup(files->name);
+            new_node->isDir = files->isDir;
+            new_node->exist = files->exist;
+            new_node->is_scan = false;
+            for (int i = 0; i < 6; i++)
+                new_node->options[i] = files->options[i];
+            new_node->next = NULL;
+
+            // Find the last node in the list
+            node *list_tail = head;
+            while (list_tail->next) {
+                list_tail = list_tail->next;
+            }
+            list_tail->next = new_node;
+            recursive_option(head);
+        }
+        files = files->next;
+    }
+}
+
+
+
+
+
+int main(int argc, char *argv[])
+{
+    node *head = NULL;
+
+    // parsing
+    head = parsing(argv, argc);
+
+    // fill isDir and exist fields for each file
+    treat_files(head);
+
+    // sort files by name, reverse and time
+    head = sort_files(head);
+
+    // 1. display not exist files
+    display_not_found(head);
+
+    // debug: show parsing
+
+    // 2. display files
+    display_files(head);
+
+    // if there is at least one file exist in the list
+    bool there_is_files = false;
+    bool there_is_directories = false;
+    for (node *tmp = head; tmp; tmp = tmp->next)
+    {
+        if (tmp->exist && tmp->isDir)
+        {
+            there_is_directories = true;
+        }
+        if (tmp->exist && !tmp->isDir)
+        {
+            there_is_files = true;
+        }
+    }
+    if (there_is_files)
+        ft_printf("\n");
+    if (there_is_files && there_is_directories)
         ft_printf("\n");
 
-    // ft_printf("file_found: %d", file_found);
-    // ft_printf("foldertoscan[0]: %s", foldertoscan[0]);
-    if (file_found && foldertoscan[0])
-        ft_printf("\n\n");
+    // 3. display directories
 
-    display_system(foldertoscan, options, filestoprint[0] && foldertoscan[0]);
-    // if (foldertoscan[0])
-        // ft_printf("\n");
+    // remove all useless files
+    head = remove_useless_files(head);
+    if (head == NULL)
+        return (0);
+
+bool show_name = false;
+
+if (there_is_directories && there_is_files)
+    show_name = true;
+
+if (head->next)
+    show_name = true;
+
+node *tmp = NULL;
+node *start = NULL;
+
+if (head)
+{
+    tmp = (node *)malloc(sizeof(node));
+    tmp->path = ft_strdup(head->path);
+    tmp->name = ft_strdup(head->name);
+    tmp->isDir = head->isDir;
+    tmp->exist = head->exist;
+    tmp->is_scan = false;
+    for (int i = 0; i < 6; i++)
+        tmp->options[i] = head->options[i];
+    tmp->next = NULL;
+    start = tmp;
+    head = head->next;
+    if (is_in(tmp->options, 'R'))
+        recursive_option(tmp);
+}
+
+while (head)
+{
+    node *new_node = (node *)malloc(sizeof(node));
+    new_node->path = ft_strdup(head->path);
+    new_node->name = ft_strdup(head->name);
+    new_node->isDir = head->isDir;
+    new_node->exist = head->exist;
+    new_node->is_scan = false;
+    for (int i = 0; i < 6; i++)
+        new_node->options[i] = head->options[i];
+    new_node->next = NULL;
+
+    tmp = start;
+    while (tmp->next)
+        tmp = tmp->next;
+    tmp->next = new_node;
+
+    if (is_in(new_node->options, 'R'))
+        recursive_option(new_node);
+
+    head = head->next;
+}
+
+display_directories(start, show_name);
+
     return (0);
 }

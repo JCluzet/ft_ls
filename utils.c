@@ -1,6 +1,6 @@
 #include "ft_ls.h"
 
-char *ft_strdup(char *s)
+char *ft_strdup(const char *s)
 {
     char *moulitruc;
     int i;
@@ -99,7 +99,7 @@ void ft_putnbr(int n)
         ft_putchar(n + '0');
 }
 
-int ft_strlen(char *str)
+int ft_strlen(const char *str)
 {
     int i = 0;
     while (str[i])
@@ -200,28 +200,96 @@ bool is_in(char *str, char c)
 #include <string.h>
 #include <errno.h>
 
-// Fonction de comparaison pour le tri
-int cmp_time(const char *a, const char *b) {
-    // what if the last modification file path between a and b
-    // if it's the same, we compare the file name
+#include <time.h>
+
+#include <time.h>
+
+
+// if this is a mac 
+// #ifdef __APPLE__
+
+
+
+
+// int cmp_time(node *first, node *second) {
+//     // what if the last modification file path between a and b
+//     // if it's the same, we compare the file name
+//     struct stat stat_a;
+//     struct stat stat_b;
+//     lstat(first->path, &stat_a);
+//     lstat(second->path, &stat_b);
+
+//     // if (stat_a.st_mtime == stat_b.st_mtime) {
+//     //     return strcmp(first->path, second->path);
+//     // }
+
+//     // printf file a and b and her last modification time
+//     char time_a[100], time_b[100];
+//     strftime(time_a, 100, "%Y-%m-%d %H:%M:%S", localtime(&stat_a.st_mtime));
+//     strftime(time_b, 100, "%Y-%m-%d %H:%M:%S", localtime(&stat_b.st_mtime));
+//     // ft_printf("%s last modification time: %s\n", first->path, time_a);
+//     // ft_printf("%s last modification time: %s\n", second->path, time_b);
+
+//     // ft_printf("between %s and %s, %s is the last modification file\n\n", first->path, second->path, (stat_a.st_mtime > stat_b.st_mtime) ? first->path : second->path);
+//         // printf("time: stat.a.st_mtime: %ld\n", stat_a.st_mtime);
+//         // printf("time: stat.b.st_mtime: %ld\n\n\n", stat_b.st_mtime);
+
+//     // if they have the same last modification time, we compare the file name
+//     if (stat_a.st_mtimespec.tv_sec == stat_b.st_mtimespec.tv_sec) {
+//         return strcmp(first->path, second->path);
+//     }
+
+//     return (stat_a.st_mtime > stat_b.st_mtime) ? -1 : 1;
+// }
+// #else
+// LINUX VERSION
+int cmp_time(node *first, node *second) {
     struct stat stat_a;
     struct stat stat_b;
-    lstat(a, &stat_a);
-    lstat(b, &stat_b);
 
-    if (stat_a.st_mtime == stat_b.st_mtime) {
-        return strcmp(a, b);
+    lstat(first->path, &stat_a);
+    lstat(second->path, &stat_b);
+
+    if (stat_a.st_mtimespec.tv_sec == stat_b.st_mtimespec.tv_sec) {
+        return strcmp(first->path, second->path);
     }
 
-    // printf file a and b and her last modification time
-    printf("%s last modification time: %ld \t %s last modification time: %ld\n", a, stat_a.st_mtime, b, stat_b.st_mtime);
+    return (stat_a.st_mtimespec.tv_sec > stat_b.st_mtimespec.tv_sec) ? -1 : 1;
+}
 
-    if (stat_a.st_mtime > stat_b.st_mtime) {
-        return -1;
-    } else {
-        return 1;
+// #endif
+
+char *get_date_modification(char *path)
+{
+    struct stat attribut;
+    stat(path, &attribut);
+    char *date_modification = ctime(&attribut.st_mtime);
+    return (date_modification);
+}
+
+bool is_sorted_time(node *head)
+{
+    node *tmp = head;
+    while (tmp->next)
+    {
+        if (cmp_time(tmp, tmp->next) == 1)
+            return (false);
+        tmp = tmp->next;
     }
+    return (true);
+}
 
+// main.o a 00:28:39 1678491036
+// utils.o 00:25:43  1678491036
+
+bool is_dir(char *file)
+{
+    struct stat st;
+    if (stat(file, &st) == -1)
+        return (false);
+    if (S_ISDIR(st.st_mode))
+        return (true);
+    return (false);
 }
 
 
@@ -232,6 +300,14 @@ static void	swap_files(char **a, char **b)
 	tmp = *a;
 	*a = *b;
 	*b = tmp;
+}
+
+bool path_exists(char *path)
+{
+    struct stat buf;
+    if (stat(path, &buf) == -1)
+        return (false);
+    return (true);
 }
 
 char	**sort_by_time(char **files)

@@ -14,12 +14,12 @@ FLAGS    :=
 #                                 PROGRAM'S SRCS                               #
 ################################################################################
 
-SRCS        :=      parsing.c \
-                          ft_printf.c \
-                          utils.c \
-                          main.c \
+SRCS        := 			main.c \
+						utils.c \
+						ft_printf.c \
+						parsing.c \
 						display.c \
-						chain_list.c \
+						sort.c \
                           
 OBJS        := $(SRCS:.c=.o)
 
