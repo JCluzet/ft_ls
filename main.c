@@ -76,6 +76,8 @@ node *find_folder(char *path, char options[6])
     DIR *dir;
     struct dirent *sd;
     dir = opendir(path);
+    if (dir == NULL)
+        return NULL;
     while ((sd = readdir(dir)) != NULL)
     {
         if (sd->d_name[0] != '.' || is_in(options, 'a'))
@@ -101,7 +103,8 @@ node *find_folder(char *path, char options[6])
     head = sort_files(head);
     return (head);
 }
-void recursive_option(node *head) {
+void recursive_option(node *head)
+{
     node *tmp = head;
     char *path = NULL;
     node *last_node = NULL;
@@ -113,15 +116,15 @@ void recursive_option(node *head) {
     last_node = tmp;
     last_node->visited = true;
 
-    // ft_printf("OK C CA:%s:\n", last_node->path);  
+    // ft_printf("OK C CA:%s:\n", last_node->path);
 
     node *files = find_folder(last_node->path, last_node->options);
     last_node->is_scan = true;
 
-
-
-    while (files) {
-        if (files->isDir) {
+    while (files)
+    {
+        if (files->isDir)
+        {
             node *new_node = (node *)malloc(sizeof(node));
             new_node->path = ft_strdup(files->path);
             new_node->name = ft_strdup(files->name);
@@ -134,7 +137,8 @@ void recursive_option(node *head) {
 
             // Find the last node in the list
             node *list_tail = head;
-            while (list_tail->next) {
+            while (list_tail->next)
+            {
                 list_tail = list_tail->next;
             }
             list_tail->next = new_node;
@@ -143,10 +147,6 @@ void recursive_option(node *head) {
         files = files->next;
     }
 }
-
-
-
-
 
 int main(int argc, char *argv[])
 {
@@ -195,58 +195,58 @@ int main(int argc, char *argv[])
     if (head == NULL)
         return (0);
 
-bool show_name = false;
+    bool show_name = false;
 
-if (there_is_directories && there_is_files)
-    show_name = true;
+    if (there_is_directories && there_is_files)
+        show_name = true;
 
-if (head->next)
-    show_name = true;
+    if (head->next)
+        show_name = true;
 
-node *tmp = NULL;
-node *start = NULL;
+    node *tmp = NULL;
+    node *start = NULL;
 
-if (head)
-{
-    tmp = (node *)malloc(sizeof(node));
-    tmp->path = ft_strdup(head->path);
-    tmp->name = ft_strdup(head->name);
-    tmp->isDir = head->isDir;
-    tmp->exist = head->exist;
-    tmp->is_scan = false;
-    for (int i = 0; i < 6; i++)
-        tmp->options[i] = head->options[i];
-    tmp->next = NULL;
-    start = tmp;
-    head = head->next;
-    if (is_in(tmp->options, 'R'))
-        recursive_option(tmp);
-}
+    if (head)
+    {
+        tmp = (node *)malloc(sizeof(node));
+        tmp->path = ft_strdup(head->path);
+        tmp->name = ft_strdup(head->name);
+        tmp->isDir = head->isDir;
+        tmp->exist = head->exist;
+        tmp->is_scan = false;
+        for (int i = 0; i < 6; i++)
+            tmp->options[i] = head->options[i];
+        tmp->next = NULL;
+        start = tmp;
+        head = head->next;
+        if (is_in(tmp->options, 'R'))
+            recursive_option(tmp);
+    }
 
-while (head)
-{
-    node *new_node = (node *)malloc(sizeof(node));
-    new_node->path = ft_strdup(head->path);
-    new_node->name = ft_strdup(head->name);
-    new_node->isDir = head->isDir;
-    new_node->exist = head->exist;
-    new_node->is_scan = false;
-    for (int i = 0; i < 6; i++)
-        new_node->options[i] = head->options[i];
-    new_node->next = NULL;
+    while (head)
+    {
+        node *new_node = (node *)malloc(sizeof(node));
+        new_node->path = ft_strdup(head->path);
+        new_node->name = ft_strdup(head->name);
+        new_node->isDir = head->isDir;
+        new_node->exist = head->exist;
+        new_node->is_scan = false;
+        for (int i = 0; i < 6; i++)
+            new_node->options[i] = head->options[i];
+        new_node->next = NULL;
 
-    tmp = start;
-    while (tmp->next)
-        tmp = tmp->next;
-    tmp->next = new_node;
+        tmp = start;
+        while (tmp->next)
+            tmp = tmp->next;
+        tmp->next = new_node;
 
-    if (is_in(new_node->options, 'R'))
-        recursive_option(new_node);
+        if (is_in(new_node->options, 'R'))
+            recursive_option(new_node);
 
-    head = head->next;
-}
+        head = head->next;
+    }
 
-display_directories(start, show_name);
+    display_directories(start, show_name);
 
     return (0);
 }
