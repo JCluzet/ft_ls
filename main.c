@@ -101,6 +101,7 @@ node *find_folder(char *path, char options[6])
         }
     }
     head = sort_files(head);
+    closedir(dir);
     return (head);
 }
 void recursive_option(node *head)
