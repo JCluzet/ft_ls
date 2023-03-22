@@ -63,7 +63,7 @@ node *remove_useless_files(node *head)
         head = head->next;
     }
     // free the old chain list
-    // free_node(head);
+    free_node(head);
     return (tmp);
 }
 
@@ -146,6 +146,7 @@ void recursive_option(node *head)
         }
         files = files->next;
     }
+    free_node(files);
 }
 
 int main(int argc, char *argv[])
@@ -245,8 +246,10 @@ int main(int argc, char *argv[])
 
         head = head->next;
     }
+    
 
-    display_directories(start, show_name);
+    display_directories(start, show_name, is_in(start->options, 'l'));
 
+    free_node(head);
     return (0);
 }

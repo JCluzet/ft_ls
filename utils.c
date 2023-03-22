@@ -20,6 +20,17 @@ char *ft_strdup(const char *s)
     return (moulitruc);
 }
 
+void free_node(node *head)
+{
+    node *tmp = head;
+    while (tmp)
+    {
+        free(tmp->path);
+        free(tmp->name);
+        tmp = tmp->next;
+    }
+}
+
 int ft_strcmp(char *s1, char *s2)
 {
     int i = 0;

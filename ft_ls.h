@@ -46,7 +46,7 @@ typedef struct s_dir
 } t_dir;
 
 void display_files(node *head);
-void display_directories(node *head, bool show_name);
+void display_directories(node *head, bool show_name, bool long_listing);
 void treat_files(node *head);
 node *find_folder(char *path, char options[6]);
 bool is_executable(char *path);
@@ -76,5 +76,7 @@ char *ft_itoa(int n);
 char *ft_strrev(char *str);
 char *ft_strdup(const char *s);
 bool is_in(char *str, char c);
+void free_node(node *head);
+
 
 #endif
