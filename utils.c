@@ -254,6 +254,10 @@ bool is_in(char *str, char c)
 // }
 // #else
 // LINUX VERSION
+
+
+
+#if defined(__APPLE__) || defined(__MACH__)
 int cmp_time(node *first, node *second) {
     struct stat stat_a;
     struct stat stat_b;
@@ -267,6 +271,25 @@ int cmp_time(node *first, node *second) {
 
     return (stat_a.st_mtimespec.tv_sec > stat_b.st_mtimespec.tv_sec) ? -1 : 1;
 }
+#elif defined(__linux__)
+int cmp_time(node *first, node *second) {
+    struct stat stat_a;
+    struct stat stat_b;
+
+    lstat(first->path, &stat_a);
+    lstat(second->path, &stat_b);
+
+    if (stat_a.st_mtim.tv_sec == stat_b.st_mtim.tv_sec) {
+        return strcmp(first->path, second->path);
+    }
+
+    return (stat_a.st_mtim.tv_sec > stat_b.st_mtim.tv_sec) ? -1 : 1;
+}
+#else
+    #error "OS non pris en charge"
+#endif
+
+
 
 // #endif
 
