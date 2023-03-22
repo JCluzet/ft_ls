@@ -6,9 +6,17 @@
 #include <time.h>
 #include <string.h>
 
+void file_mode_string(mode_t mode, char *str) {
+    const char *chars = "rwxrwxrwx";
+    for (int i = 0; i < 9; ++i) {
+        str[i] = (mode & (1 << (8 - i))) ? chars[i] : '-';
+    }
+    str[9] = '\0';
+}
+
 void display_file_details(const char *path, const struct stat *file_stat) {
     char file_mode[11];
-    strmode(file_stat->st_mode, file_mode);
+    file_mode_string(file_stat->st_mode, file_mode);
     file_mode[10] = '\0'; // Add null terminator to the string
     ft_printf("%s ", file_mode);
     ft_printf("%lu ", (unsigned long)file_stat->st_nlink);
