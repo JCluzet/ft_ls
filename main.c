@@ -123,6 +123,7 @@ void recursive_option(node *head)
 
     node *files = find_folder(last_node->path, last_node->options);
     last_node->is_scan = true;
+    node *tofree = files;
 
     while (files)
     {
@@ -149,7 +150,7 @@ void recursive_option(node *head)
         }
         files = files->next;
     }
-    free_node(files);
+    free_node(tofree);
 }
 
 int main(int argc, char *argv[])
