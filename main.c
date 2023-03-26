@@ -154,14 +154,6 @@ void recursive_option(node *head)
         }
         iter = iter->next;
     }
-    while (files)
-    {
-        node *tmp = files;
-        files = files->next;
-        free(tmp->path);
-        free(tmp->name);
-        free(tmp);
-    }
 }
 
 
