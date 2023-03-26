@@ -214,7 +214,13 @@ int main(int argc, char *argv[])
 
     bool show_name = false;
 
-    if((is_in(head->options, 'R') && linux_os) || head->next || (there_is_directories && there_is_files))
+    if (there_is_directories && there_is_files)
+        show_name = true;
+
+    if (head->next)
+        show_name = true;
+    
+    if(is_in(head->options, 'R') && linux_os)
         show_name = true;
 
     node *tmp = NULL;
