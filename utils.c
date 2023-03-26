@@ -22,12 +22,13 @@ char *ft_strdup(const char *s)
 
 void free_node(node *head)
 {
-    node *tmp = head;
-    while (tmp)
+    while (head)
     {
+        node *tmp = head;
+        head = head->next;
         free(tmp->path);
         free(tmp->name);
-        tmp = tmp->next;
+        free(tmp);
     }
 }
 
