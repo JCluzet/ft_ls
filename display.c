@@ -58,6 +58,7 @@ void display_directories(node *head, bool show_name, bool long_listing)
 
             node *folder = find_folder(tmp->path, tmp->options);
             folder = sort_files(folder);
+            node *temp_free = folder;
             folder_exist = folder != NULL;
 
             // Calculate the total number of blocks used by the files in the directory
@@ -114,8 +115,9 @@ void display_directories(node *head, bool show_name, bool long_listing)
                 ft_printf("\n");
             if (tmp->next)
                 ft_printf("\n");
-            free_list(folder);
             // free the folder
+            free_list(temp_free);
+            
         }
         tmp = tmp->next;
         i++;
