@@ -93,11 +93,11 @@ void display_directories(node *head, bool show_name, bool long_listing)
     node *tmp = head;
     int i = 0;
     bool folder_exist = false;
-    bool linux = false;
+    bool linux_os = false;
     #if defined(__APPLE__) || defined(__MACH__)
-    linux = false;
+    linux_os = false;
     #else
-    linux = true;
+    linux_os = true;
     #endif
     while (tmp)
     {
@@ -107,7 +107,7 @@ void display_directories(node *head, bool show_name, bool long_listing)
                 ft_printf("%s:\n", tmp->path);
             else if (i > 0)
                 ft_printf("%s:\n", tmp->path);
-            else if (long_listing && linux)
+            else if (long_listing && linux_os)
                 ft_printf("%s:\n", tmp->path);
 
             node *folder = find_folder(tmp->path, tmp->options);
