@@ -113,7 +113,7 @@ void display_directories(node *head, bool show_name, bool long_listing)
             while (folder_iter)
             {
                 struct stat file_stat;
-                if (lstat(folder_iter->path, &file_stat) == 0)
+                if (stat(folder_iter->path, &file_stat) == 0)
                 {
                     total_blocks += file_stat.st_blocks;
                 }
