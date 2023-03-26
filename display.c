@@ -126,7 +126,11 @@ void display_directories(node *head, bool show_name, bool long_listing)
                 if (total_blocks == 0)
                     ft_printf("total 0\n");
                 else
+#if defined(__APPLE__) || defined(__MACH__)
                     ft_printf("total %ld\n", total_blocks);
+                    #else
+                    ft_printf("total %ld\n", total_blocks / 2);
+#endif
             }
 
             // Display the directory content
