@@ -34,7 +34,7 @@ char *ft_ultoa(unsigned long n)
 char *ft_lltoa(long long n)
 {
     char *str;
-    int len = ft_numlen(n < 0 ? -n : n);
+    long long len = ft_numlen(n < 0 ? -n : n);
     int neg = n < 0;
 
     if (neg)
@@ -51,6 +51,7 @@ char *ft_lltoa(long long n)
         str[0] = '-';
     return (str);
 }
+
 
 int ft_printf(const char *format, ...)
 {
