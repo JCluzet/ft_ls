@@ -6,9 +6,11 @@
 #include <time.h>
 #include <string.h>
 
-void file_mode_string(mode_t mode, char *str) {
+void file_mode_string(mode_t mode, char *str)
+{
     const char *chars = "rwxrwxrwx";
-    for (int i = 0; i < 9; ++i) {
+    for (int i = 0; i < 9; ++i)
+    {
         str[i] = (mode & (1 << (8 - i))) ? chars[i] : '-';
     }
     str[9] = '\0';
@@ -35,7 +37,8 @@ char ft_tolower(char c)
     return (c);
 }
 
-void display_file_details(const char *path, const struct stat *file_stat) {
+void display_file_details(const char *path, const struct stat *file_stat)
+{
     char file_mode[11];
     file_mode_string(file_stat->st_mode, file_mode);
     file_mode[10] = '\0'; // Add null terminator to the string
@@ -46,26 +49,27 @@ void display_file_details(const char *path, const struct stat *file_stat) {
         ft_printf("-");
     ft_printf("%s ", file_mode);
 
-
     ft_printf("%ld ", (unsigned long)file_stat->st_nlink);
 
     ft_printf("%s %s ", getpwuid(file_stat->st_uid)->pw_name, getgrgid(file_stat->st_gid)->gr_name);
 
     int space = 9 - ft_numlonglen(file_stat->st_size);
-    
+
     while (space-- && space > 0)
         ft_printf(" ");
     ft_printf("%ld ", (long long)file_stat->st_size);
     char time_str[20];
+#if defined(__APPLE__) || defined(__MACH__)
     strftime(time_str, sizeof(time_str), "%d", localtime(&file_stat->st_mtime));
     ft_printf("%s ", time_str);
     strftime(time_str, sizeof(time_str), "%b", localtime(&file_stat->st_mtime));
     // put in minuscule the month
-    #if defined(__APPLE__) || defined(__MACH__)
     for (int i = 0; time_str[i]; i++)
         time_str[i] = ft_tolower(time_str[i]);
-    #endif
-    
+#else
+    strftime(time_str, sizeof(time_str), "%b %d", localtime(&file_stat->st_mtime));
+#endif
+
     ft_printf("%s ", time_str);
     strftime(time_str, sizeof(time_str), "%H:%M", localtime(&file_stat->st_mtime));
     ft_printf("%s ", time_str);
@@ -83,8 +87,6 @@ void free_list(node *head)
         free(tmp);
     }
 }
-
-
 
 void display_directories(node *head, bool show_name, bool long_listing)
 {
@@ -126,7 +128,6 @@ void display_directories(node *head, bool show_name, bool long_listing)
                     ft_printf("total 0\n");
                 else
                     ft_printf("total %lu\n", total_blocks);
-                
             }
 
             // Display the directory content
@@ -160,15 +161,11 @@ void display_directories(node *head, bool show_name, bool long_listing)
             if (tmp->next)
                 ft_printf("\n");
             free_list(temp_free);
-            
         }
         tmp = tmp->next;
         i++;
     }
 }
-
-
-
 
 void display_files(node *head)
 {
