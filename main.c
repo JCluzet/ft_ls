@@ -198,6 +198,13 @@ int main(int argc, char *argv[])
     if (there_is_files && there_is_directories)
         ft_printf("\n");
 
+    bool linux_os = false;
+    #if defined(__APPLE__) || defined(__MACH__)
+    linux_os = false;
+    #else
+    linux_os = true;
+    #endif
+
     // 3. display directories
 
     // remove all useless files
@@ -207,10 +214,7 @@ int main(int argc, char *argv[])
 
     bool show_name = false;
 
-    if (there_is_directories && there_is_files)
-        show_name = true;
-
-    if (head->next)
+    if((is_in(head->options, 'R') && linux_os) || head->next || (there_is_directories && there_is_files))
         show_name = true;
 
     node *tmp = NULL;
