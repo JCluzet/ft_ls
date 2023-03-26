@@ -28,6 +28,7 @@ void treat_files(node *head)
 node *remove_useless_files(node *head)
 {
     node *tmp = NULL;
+    node *tofree = head;
 
     // create a new chain list, add all elements in head 1 by 1, except the useless ones
     while (head)
@@ -63,7 +64,8 @@ node *remove_useless_files(node *head)
         head = head->next;
     }
     // free the old chain list
-    free_node(head);
+    // free_node
+    free_node(tofree);
     return (tmp);
 }
 
