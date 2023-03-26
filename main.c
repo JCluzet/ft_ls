@@ -125,24 +125,22 @@ void recursive_option(node *head)
     last_node = tmp;
     last_node->visited = true;
 
-    // ft_printf("OK C CA:%s:\n", last_node->path);
-
     node *files = find_folder(last_node->path, last_node->options);
     last_node->is_scan = true;
-    node *tofree = files;
+    node *iter = files;
 
-    while (files)
+    while (iter)
     {
-        if (files->isDir)
+        if (iter->isDir)
         {
             node *new_node = (node *)malloc(sizeof(node));
-            new_node->path = ft_strdup(files->path);
-            new_node->name = ft_strdup(files->name);
-            new_node->isDir = files->isDir;
-            new_node->exist = files->exist;
+            new_node->path = ft_strdup(iter->path);
+            new_node->name = ft_strdup(iter->name);
+            new_node->isDir = iter->isDir;
+            new_node->exist = iter->exist;
             new_node->is_scan = false;
             for (int i = 0; i < 6; i++)
-                new_node->options[i] = files->options[i];
+                new_node->options[i] = iter->options[i];
             new_node->next = NULL;
 
             // Find the last node in the list
@@ -153,23 +151,19 @@ void recursive_option(node *head)
             }
             list_tail->next = new_node;
             recursive_option(head);
-            // break;
         }
-        files = files->next;
-        // free(files->path);
-        // free(files->name);
-        // free(files);
+        iter = iter->next;
     }
-    // free files list
-    while (tofree)
+    while (files)
     {
-        node *tmp = tofree;
-        tofree = tofree->next;
+        node *tmp = files;
+        files = files->next;
         free(tmp->path);
         free(tmp->name);
         free(tmp);
     }
 }
+
 
 int main(int argc, char *argv[])
 {
