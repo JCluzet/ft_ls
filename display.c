@@ -93,6 +93,12 @@ void display_directories(node *head, bool show_name, bool long_listing)
     node *tmp = head;
     int i = 0;
     bool folder_exist = false;
+    bool linux = false;
+    #if defined(__APPLE__) || defined(__MACH__)
+    linux = false;
+    #else
+    linux = true;
+    #endif
     while (tmp)
     {
         if (tmp->exist && tmp->isDir)
@@ -101,10 +107,8 @@ void display_directories(node *head, bool show_name, bool long_listing)
                 ft_printf("%s:\n", tmp->path);
             else if (i > 0)
                 ft_printf("%s:\n", tmp->path);
-            else if (long_listing)
-                #if defined(__APPLE__) || defined(__MACH__)
+            else if (long_listing && linux)
                 ft_printf("%s:\n", tmp->path);
-                #endif
 
             node *folder = find_folder(tmp->path, tmp->options);
             folder = sort_files(folder);
