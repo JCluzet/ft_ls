@@ -258,5 +258,6 @@ int main(int argc, char *argv[])
     display_directories(start, show_name, is_in(start->options, 'l'));
 
     free_node(to_free);
+    free_node(start);
     return (0);
 }
