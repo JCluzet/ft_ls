@@ -41,19 +41,19 @@ void display_file_details(const char *path, const struct stat *file_stat)
 {
     char file_mode[11];
     file_mode_string(file_stat->st_mode, file_mode);
-    file_mode[10] = '\0'; // Add null terminator to the string
-    // if its a directory display d, else -
+    file_mode[10] = '\0';
     if (S_ISDIR(file_stat->st_mode))
         ft_printf("d");
     else
         ft_printf("-");
     ft_printf("%s ", file_mode);
-
+    int space = 4 - ft_numlonglen(file_stat->st_nlink);
+    while (space-- && space > 0)
+        ft_printf(" ");
     ft_printf("%ld ", (unsigned long)file_stat->st_nlink);
-
     ft_printf("%s %s ", getpwuid(file_stat->st_uid)->pw_name, getgrgid(file_stat->st_gid)->gr_name);
-
-    int space = 9 - ft_numlonglen(file_stat->st_size);
+   
+    space = 9 - ft_numlonglen(file_stat->st_size);
 
     while (space-- && space > 0)
         ft_printf(" ");
@@ -123,11 +123,10 @@ void display_directories(node *head, bool show_name, bool long_listing)
             // Display the total
             if (long_listing)
             {
-                // if total is 0, display total 0
                 if (total_blocks == 0)
                     ft_printf("total 0\n");
                 else
-                    ft_printf("total %lu\n", total_blocks);
+                    ft_printf("total %ld\n", total_blocks);
             }
 
             // Display the directory content

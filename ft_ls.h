@@ -4,7 +4,6 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
-//include for stat
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <time.h>
@@ -29,21 +28,12 @@ typedef struct node
 } node;
 
 
-// create a chained list to store the files
 typedef struct s_file
 {
     char *name;
     char* path;
     struct s_file *next;
 } t_file;
-
-void add_file(t_file **head, char *name, char *path);
-// create a chained list to store the directories
-typedef struct s_dir
-{
-    char *name;
-    struct s_dir *next;
-} t_dir;
 
 void display_files(node *head);
 void display_directories(node *head, bool show_name, bool long_listing);

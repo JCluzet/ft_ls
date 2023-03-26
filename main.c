@@ -30,7 +30,6 @@ node *remove_useless_files(node *head)
     node *tmp = NULL;
     node *tofree = head;
 
-    // create a new chain list, add all elements in head 1 by 1, except the useless ones
     while (head)
     {
         if (head->exist && head->isDir)
@@ -63,8 +62,6 @@ node *remove_useless_files(node *head)
         }
         head = head->next;
     }
-    // free the old chain list
-    // free_node
     free_node(tofree);
     return (tmp);
 }
@@ -75,7 +72,6 @@ node *find_folder(char *path, char options[6])
     node *head = NULL;
     node *current = NULL;
     node *previous = NULL;
-    // node *tofree = previous;
     DIR *dir;
     struct dirent *sd;
     dir = opendir(path);
@@ -103,12 +99,10 @@ node *find_folder(char *path, char options[6])
             else
                 previous->next = current;
             previous = current;
-            // free(current);
         }
     }
     head = sort_files(head);
-    // free_node(tofree);
-    // free(current);
+    // print how many files are found
     closedir(dir);
     return (head);
 }
@@ -131,7 +125,8 @@ void recursive_option(node *head)
 
     while (iter)
     {
-        if (iter->isDir)
+        // ft_printf("go to ");
+        if (iter->isDir && ft_strcmp(iter->name, ".") != 0 && ft_strcmp(iter->name, "..") != 0)
         {
             node *new_node = (node *)malloc(sizeof(node));
             new_node->path = ft_strdup(iter->path);
@@ -153,6 +148,8 @@ void recursive_option(node *head)
             }
             list_tail->next = new_node;
             // free(iter);
+            // if the folder name is . or .. go to next folder in the list and break
+            // ft_printf("\n>>%s\n", iter->name);
             recursive_option(head);
         }
         iter = iter->next;
