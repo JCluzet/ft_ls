@@ -29,16 +29,17 @@ void display_file_details(const char *path, const struct stat *file_stat) {
 
 void free_list(node *head)
 {
-    node *tmp = head;
-    while (tmp)
+    node *tmp;
+    while (head)
     {
-        node *next = tmp->next;
+        tmp = head;
+        head = head->next;
         free(tmp->path);
         free(tmp->name);
         free(tmp);
-        tmp = next;
     }
 }
+
 
 
 void display_directories(node *head, bool show_name, bool long_listing)
@@ -113,8 +114,8 @@ void display_directories(node *head, bool show_name, bool long_listing)
                 ft_printf("\n");
             if (tmp->next)
                 ft_printf("\n");
-            // free the folder
             free_list(folder);
+            // free the folder
         }
         tmp = tmp->next;
         i++;
