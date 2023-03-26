@@ -101,6 +101,10 @@ void display_directories(node *head, bool show_name, bool long_listing)
                 ft_printf("%s:\n", tmp->path);
             else if (i > 0)
                 ft_printf("%s:\n", tmp->path);
+            else if (long_listing)
+                #if defined(__APPLE__) || defined(__MACH__)
+                ft_printf("%s:\n", tmp->path);
+                #endif
 
             node *folder = find_folder(tmp->path, tmp->options);
             folder = sort_files(folder);
