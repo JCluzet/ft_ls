@@ -61,8 +61,11 @@ void display_file_details(const char *path, const struct stat *file_stat) {
     ft_printf("%s ", time_str);
     strftime(time_str, sizeof(time_str), "%b", localtime(&file_stat->st_mtime));
     // put in minuscule the month
+    #if defined(__APPLE__) || defined(__MACH__)
     for (int i = 0; time_str[i]; i++)
         time_str[i] = ft_tolower(time_str[i]);
+    #endif
+    
     ft_printf("%s ", time_str);
     strftime(time_str, sizeof(time_str), "%H:%M", localtime(&file_stat->st_mtime));
     ft_printf("%s ", time_str);
