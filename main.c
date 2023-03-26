@@ -112,7 +112,7 @@ node *find_folder(char *path, char options[6])
     closedir(dir);
     return (head);
 }
-node *recursive_option(node *head)
+void recursive_option(node *head)
 {
     node *tmp = head;
     char *path = NULL;
@@ -121,7 +121,7 @@ node *recursive_option(node *head)
     while (tmp && tmp->visited)
         tmp = tmp->next;
     if (!tmp)
-        return NULL;
+        return;
     last_node = tmp;
     last_node->visited = true;
 
@@ -160,8 +160,15 @@ node *recursive_option(node *head)
         // free(files->name);
         // free(files);
     }
-    // free_node(tofree);
-    return files;
+    // free files list
+    while (tofree)
+    {
+        node *tmp = tofree;
+        tofree = tofree->next;
+        free(tmp->path);
+        free(tmp->name);
+        free(tmp);
+    }
 }
 
 int main(int argc, char *argv[])
@@ -238,7 +245,7 @@ int main(int argc, char *argv[])
         start = tmp;
         head = head->next;
         if (is_in(tmp->options, 'R'))
-            files = recursive_option(tmp);
+            recursive_option(tmp);
     }
 
     while (head)
@@ -259,7 +266,7 @@ int main(int argc, char *argv[])
         tmp->next = new_node;
 
         if (is_in(new_node->options, 'R'))
-            files = recursive_option(new_node);
+            recursive_option(new_node);
 
         head = head->next;
     }
