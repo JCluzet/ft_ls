@@ -86,7 +86,9 @@ node *find_folder(char *path, char options[6])
         {
             current = (node *)malloc(sizeof(node));
             current->path = ft_strjoin(path, "/");
-            current->path = ft_strjoin(current->path, sd->d_name);
+            char *tmp_path = current->path;
+            current->path = ft_strjoin(tmp_path, sd->d_name);
+            free(tmp_path);
             current->name = ft_strdup(sd->d_name);
             current->isDir = is_dir(current->path);
             current->is_scan = false;
