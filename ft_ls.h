@@ -12,7 +12,12 @@
 #include <dirent.h>
 
 #define BLUE "\033[1;36m"
+// #define GREEN "\033[1;32m"
+#if defined(__APPLE__) || defined(__MACH__)
 #define RED "\033[0;31m"
+#else
+#define RED "\033[1;32m"
+#endif
 #define RESET "\033[0m"
 
 typedef struct node
