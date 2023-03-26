@@ -30,6 +30,7 @@ void free_node(node *head)
         free(tmp->name);
         free(tmp);
     }
+    free(head);
 }
 
 int ft_strcmp(char *s1, char *s2)
