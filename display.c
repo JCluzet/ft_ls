@@ -100,6 +100,7 @@ void display_directories(node *head, bool show_name, bool long_listing)
                 ft_printf("\n");
             if (tmp->next)
                 ft_printf("\n");
+        free_node(folder);
         }
         tmp = tmp->next;
         i++;
