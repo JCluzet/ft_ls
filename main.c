@@ -75,6 +75,7 @@ node *find_folder(char *path, char options[6])
     node *head = NULL;
     node *current = NULL;
     node *previous = NULL;
+    node *tofree = previous;
     DIR *dir;
     struct dirent *sd;
     dir = opendir(path);
@@ -105,6 +106,7 @@ node *find_folder(char *path, char options[6])
         }
     }
     head = sort_files(head);
+    free_node(tofree);
     closedir(dir);
     return (head);
 }
