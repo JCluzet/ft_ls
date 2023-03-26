@@ -75,7 +75,7 @@ node *find_folder(char *path, char options[6])
     node *head = NULL;
     node *current = NULL;
     node *previous = NULL;
-    node *tofree = previous;
+    // node *tofree = previous;
     DIR *dir;
     struct dirent *sd;
     dir = opendir(path);
@@ -107,12 +107,12 @@ node *find_folder(char *path, char options[6])
         }
     }
     head = sort_files(head);
-    free_node(tofree);
+    // free_node(tofree);
     // free(current);
     closedir(dir);
     return (head);
 }
-void recursive_option(node *head)
+node *recursive_option(node *head)
 {
     node *tmp = head;
     char *path = NULL;
@@ -121,7 +121,7 @@ void recursive_option(node *head)
     while (tmp && tmp->visited)
         tmp = tmp->next;
     if (!tmp)
-        return;
+        return NULL;
     last_node = tmp;
     last_node->visited = true;
 
@@ -153,10 +153,15 @@ void recursive_option(node *head)
             }
             list_tail->next = new_node;
             recursive_option(head);
+            // break;
         }
         files = files->next;
+        // free(files->path);
+        // free(files->name);
+        // free(files);
     }
-    free_node(tofree);
+    // free_node(tofree);
+    return files;
 }
 
 int main(int argc, char *argv[])
@@ -217,6 +222,7 @@ int main(int argc, char *argv[])
     node *tmp = NULL;
     node *start = NULL;
     node *to_free = head;
+    node *files = NULL;
 
     if (head)
     {
@@ -232,7 +238,7 @@ int main(int argc, char *argv[])
         start = tmp;
         head = head->next;
         if (is_in(tmp->options, 'R'))
-            recursive_option(tmp);
+            files = recursive_option(tmp);
     }
 
     while (head)
@@ -253,10 +259,12 @@ int main(int argc, char *argv[])
         tmp->next = new_node;
 
         if (is_in(new_node->options, 'R'))
-            recursive_option(new_node);
+            files = recursive_option(new_node);
 
         head = head->next;
     }
+    if(files)
+        free_node(files);
     
 
     display_directories(start, show_name, is_in(start->options, 'l'));

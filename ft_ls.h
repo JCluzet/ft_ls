@@ -63,6 +63,7 @@ char **chain_list_to_array(t_file *head);
 char *ft_strjoin(char *s1, char *s2);
 char **sort_by_time(char **files);
 bool path_exists(char *path);
+node *recursive_option(node *head);
 char **reverse_order(char **files);
 char **sort_by_alphabetical_order(char **files);
 

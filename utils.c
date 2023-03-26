@@ -291,8 +291,6 @@ int cmp_time(node *first, node *second) {
     #error "OS non pris en charge"
 #endif
 
-
-
 // #endif
 
 char *get_date_modification(char *path)
@@ -314,9 +312,6 @@ bool is_sorted_time(node *head)
     }
     return (true);
 }
-
-// main.o a 00:28:39 1678491036
-// utils.o 00:25:43  1678491036
 
 bool is_dir(char *file)
 {
