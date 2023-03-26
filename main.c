@@ -103,10 +103,12 @@ node *find_folder(char *path, char options[6])
             else
                 previous->next = current;
             previous = current;
+            // free(current);
         }
     }
     head = sort_files(head);
     free_node(tofree);
+    // free(current);
     closedir(dir);
     return (head);
 }
