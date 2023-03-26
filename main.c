@@ -136,6 +136,8 @@ void recursive_option(node *head)
             node *new_node = (node *)malloc(sizeof(node));
             new_node->path = ft_strdup(iter->path);
             new_node->name = ft_strdup(iter->name);
+            free(iter->path);
+            free(iter->name);
             new_node->isDir = iter->isDir;
             new_node->exist = iter->exist;
             new_node->is_scan = false;
