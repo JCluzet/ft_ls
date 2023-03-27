@@ -154,7 +154,7 @@ void recursive_option(node *head)
         }
         iter = iter->next;
     }
-    free_node(iter);
+    free_node(files);
 }
 
 
