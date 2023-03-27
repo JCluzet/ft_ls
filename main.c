@@ -235,6 +235,7 @@ int main(int argc, char *argv[])
         tmp->name = ft_strdup(head->name);
         tmp->isDir = head->isDir;
         tmp->exist = head->exist;
+        tmp->visited = false;
         tmp->is_scan = false;
         for (int i = 0; i < 6; i++)
             tmp->options[i] = head->options[i];
@@ -251,6 +252,7 @@ int main(int argc, char *argv[])
         new_node->path = ft_strdup(head->path);
         new_node->name = ft_strdup(head->name);
         new_node->isDir = head->isDir;
+        new_node->visited = false;
         new_node->exist = head->exist;
         new_node->is_scan = false;
         for (int i = 0; i < 6; i++)
