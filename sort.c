@@ -1,7 +1,5 @@
 #include "ft_ls.h"
 
-// Create sort_files function, that a chain list and return another chain list sorted
-// we sort by name
 node *sort_files(node *head)
 {
     // if there is no file, we return NULL
@@ -24,7 +22,6 @@ node *sort_files(node *head)
             }
         }
     }
-
 
     if (is_in(head->options, 't'))
     {

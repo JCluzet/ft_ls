@@ -3,16 +3,16 @@
 
 #include <stdarg.h>
 #include <stdbool.h>
-#include <stdio.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <pwd.h>
+#include <grp.h>
+#include <string.h>
 
 #define BLUE "\033[1;36m"
-// #define GREEN "\033[1;32m"
 #if defined(__APPLE__) || defined(__MACH__)
 #define RED "\033[0;31m"
 #else
@@ -25,20 +25,11 @@ typedef struct node
     char *path;
     char *name;
     bool isDir;
-    bool is_scan;
     bool visited;
     bool exist;
     char options[6];
     struct node *next;
 } node;
-
-
-typedef struct s_file
-{
-    char *name;
-    char* path;
-    struct s_file *next;
-} t_file;
 
 void display_files(node *head);
 void display_directories(node *head, bool show_name, bool long_listing);
@@ -51,16 +42,11 @@ void show_parsing(node *head);
 int cmp_time(node *first, node *second);
 void add_node(node **head, node *new);
 int ft_printf(const char *format, ...);
-bool is_sorted_time(node *head);
 bool is_dir(char *file);
 void display_not_found(node *head);
-char **chain_list_to_array(t_file *head);
 char *ft_strjoin(char *s1, char *s2);
-char **sort_by_time(char **files);
 bool path_exists(char *path);
 void recursive_option(node *head);
-char **reverse_order(char **files);
-char **sort_by_alphabetical_order(char **files);
 
 // UTILS FUNCTIONS
 int ft_strcmp(char *s1, char *s2);
@@ -73,6 +59,5 @@ char *ft_strrev(char *str);
 char *ft_strdup(const char *s);
 bool is_in(char *str, char c);
 void free_node(node *head);
-
 
 #endif

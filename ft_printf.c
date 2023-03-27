@@ -29,8 +29,6 @@ char *ft_ultoa(unsigned long n)
     return (str);
 }
 
-
-
 char *ft_lltoa(long long n)
 {
     char *str;
@@ -51,7 +49,6 @@ char *ft_lltoa(long long n)
         str[0] = '-';
     return (str);
 }
-
 
 int ft_printf(const char *format, ...)
 {

@@ -14,7 +14,6 @@ void add_node(node **head, node *new)
     }
 }
 
-
 node *parsing(char **argv, int argc)
 {
     node *head = NULL;
@@ -37,40 +36,16 @@ node *parsing(char **argv, int argc)
                     ft_printf("-%c Already in options\n", argv[i][j]);
                     continue;
                 }
-                if (argv[i][j] == 'l')
-                {
-                    options[index_options] = 'l';
-                    index_options++;
-                    options[index_options] = '\0';
-                }
-                else if (argv[i][j] == 'R')
-                {
-                    options[index_options] = 'R';
-                    index_options++;
-                    options[index_options] = '\0';
-                }
-                else if (argv[i][j] == 'a')
-                {
-                    options[index_options] = 'a';
-                    index_options++;
-                    options[index_options] = '\0';
-                }
-                else if (argv[i][j] == 'r')
-                {
-                    options[index_options] = 'r';
-                    index_options++;
-                    options[index_options] = '\0';
-                }
-                else if (argv[i][j] == 't')
-                {
-                    options[index_options] = 't';
-                    index_options++;
-                    options[index_options] = '\0';
-                }
-                else
+                else if (argv[i][j] != 'l' && argv[i][j] != 'R' && argv[i][j] != 'a' && argv[i][j] != 'r' && argv[i][j] != 't')
                 {
                     ft_printf("ls: illegal option -- %c\n", argv[i][j]);
                     ft_printf("usage: ./ft_ls [-Ralrt] [file ...]\n");
+                }
+                else
+                {
+                    options[index_options] = argv[i][j];
+                    index_options++;
+                    options[index_options] = '\0';
                 }
             }
         }
@@ -82,7 +57,6 @@ node *parsing(char **argv, int argc)
         current = (node *)malloc(sizeof(node));
         current->path = ft_strdup(".");
         current->name = ft_strdup(".");
-        current->is_scan = false;
         current->visited = false;
         current->isDir = true;
         int j = 0;
@@ -101,7 +75,6 @@ node *parsing(char **argv, int argc)
         current->name = ft_strdup(argv[i]);
         current->visited = false;
         current->isDir = false;
-        current->is_scan = false;
         int j = 0;
         for (; options[j] != '\0'; j++)
             current->options[j] = options[j];
@@ -127,7 +100,7 @@ void show_parsing(node *head)
         ft_printf("Name: %s\n", tmp->name);
         ft_printf("Exist: %d\n", tmp->exist);
         ft_printf("IsDir: %d\n", tmp->isDir);
-        ft_printf("IsScan: %d\n\n", tmp->is_scan);
+        ft_printf("IsScan: %d\n\n", tmp->visited);
         tmp = tmp->next;
     }
     ft_printf("=======\n");

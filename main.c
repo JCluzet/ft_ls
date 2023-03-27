@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "ft_ls.h"
-#include <stdbool.h>
-#include <string.h>
 
 // fill details about files
 void treat_files(node *head)
@@ -88,7 +84,6 @@ node *find_folder(char *path, char options[6])
             free(tmp_path);
             current->name = ft_strdup(sd->d_name);
             current->isDir = is_dir(current->path);
-            current->is_scan = false;
             current->visited = false;
             current->exist = 1;
             for (int i = 0; i < 6; i++)
@@ -102,7 +97,6 @@ node *find_folder(char *path, char options[6])
         }
     }
     head = sort_files(head);
-    // print how many files are found
     closedir(dir);
     return (head);
 }
@@ -121,23 +115,18 @@ void recursive_option(node *head)
     last_node->visited = true;
 
     node *files = find_folder(last_node->path, last_node->options);
-    last_node->is_scan = true;
     node *iter = files;
 
     while (iter)
     {
-        // ft_printf("go to ");
         if (iter->isDir && ft_strcmp(iter->name, ".") != 0 && ft_strcmp(iter->name, "..") != 0)
         {
             node *new_node = (node *)malloc(sizeof(node));
             new_node->path = ft_strdup(iter->path);
             new_node->name = ft_strdup(iter->name);
-            // free(iter->path);
-            // free(iter->name);
             new_node->isDir = iter->isDir;
             new_node->exist = iter->exist;
             new_node->visited = false;
-            new_node->is_scan = false;
             for (int i = 0; i < 6; i++)
                 new_node->options[i] = iter->options[i];
             new_node->next = NULL;
@@ -149,9 +138,6 @@ void recursive_option(node *head)
                 list_tail = list_tail->next;
             }
             list_tail->next = new_node;
-            // free(iter);
-            // if the folder name is . or .. go to next folder in the list and break
-            // ft_printf("\n>>%s\n", iter->name);
             recursive_option(head);
         }
         iter = iter->next;
@@ -176,8 +162,6 @@ int main(int argc, char *argv[])
     // 1. display not exist files
     display_not_found(head);
 
-    // debug: show parsing
-
     // 2. display files
     display_files(head);
 
@@ -195,6 +179,7 @@ int main(int argc, char *argv[])
             there_is_files = true;
         }
     }
+    // display syntax
     if (there_is_files)
         ft_printf("\n");
     if (there_is_files && there_is_directories)
@@ -207,9 +192,8 @@ int main(int argc, char *argv[])
     linux_os = true;
     #endif
 
-    // 3. display directories
 
-    // remove all useless files
+    // remove all useless files (not exist or not directory)
     head = remove_useless_files(head);
     if (head == NULL)
         return (0);
@@ -225,6 +209,7 @@ int main(int argc, char *argv[])
     if(is_in(head->options, 'R') && linux_os)
         show_name = true;
 
+    // Handle -R option
     node *tmp = NULL;
     node *start = NULL;
     node *to_free = head;
@@ -238,7 +223,6 @@ int main(int argc, char *argv[])
         tmp->isDir = head->isDir;
         tmp->exist = head->exist;
         tmp->visited = false;
-        tmp->is_scan = false;
         for (int i = 0; i < 6; i++)
             tmp->options[i] = head->options[i];
         tmp->next = NULL;
@@ -256,7 +240,6 @@ int main(int argc, char *argv[])
         new_node->isDir = head->isDir;
         new_node->visited = false;
         new_node->exist = head->exist;
-        new_node->is_scan = false;
         for (int i = 0; i < 6; i++)
             new_node->options[i] = head->options[i];
         new_node->next = NULL;
@@ -273,8 +256,11 @@ int main(int argc, char *argv[])
     }
     if(files)
         free_node(files);
+
+    // ====================
     
 
+    // 3. display directories
     display_directories(start, show_name, is_in(start->options, 'l'));
 
     free_node(to_free);

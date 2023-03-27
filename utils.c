@@ -159,31 +159,6 @@ char *ft_strjoin(char *s1, char *s2)
     return (str);
 }
 
-char **chain_list_to_array(t_file *head)
-{
-    t_file *tmp;
-    char **array;
-    int i = 0;
-    int len = 0;
-
-    tmp = head;
-    while (tmp)
-    {
-        len++;
-        tmp = tmp->next;
-    }
-    array = (char **)malloc(sizeof(char *) * (len + 1));
-    tmp = head;
-    while (tmp)
-    {
-        array[i] = ft_strdup(tmp->path);
-        i++;
-        tmp = tmp->next;
-    }
-    array[i] = NULL;
-    return (array);
-}
-
 // is_executable function
 bool is_executable(char *path)
 {
@@ -207,59 +182,9 @@ bool is_in(char *str, char c)
     return (false);
 }
 
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <string.h>
-#include <errno.h>
-
-#include <time.h>
-
-#include <time.h>
-
-
-// if this is a mac 
-// #ifdef __APPLE__
-
-
-
-
-// int cmp_time(node *first, node *second) {
-//     // what if the last modification file path between a and b
-//     // if it's the same, we compare the file name
-//     struct stat stat_a;
-//     struct stat stat_b;
-//     lstat(first->path, &stat_a);
-//     lstat(second->path, &stat_b);
-
-//     // if (stat_a.st_mtime == stat_b.st_mtime) {
-//     //     return strcmp(first->path, second->path);
-//     // }
-
-//     // printf file a and b and her last modification time
-//     char time_a[100], time_b[100];
-//     strftime(time_a, 100, "%Y-%m-%d %H:%M:%S", localtime(&stat_a.st_mtime));
-//     strftime(time_b, 100, "%Y-%m-%d %H:%M:%S", localtime(&stat_b.st_mtime));
-//     // ft_printf("%s last modification time: %s\n", first->path, time_a);
-//     // ft_printf("%s last modification time: %s\n", second->path, time_b);
-
-//     // ft_printf("between %s and %s, %s is the last modification file\n\n", first->path, second->path, (stat_a.st_mtime > stat_b.st_mtime) ? first->path : second->path);
-//         // printf("time: stat.a.st_mtime: %ld\n", stat_a.st_mtime);
-//         // printf("time: stat.b.st_mtime: %ld\n\n\n", stat_b.st_mtime);
-
-//     // if they have the same last modification time, we compare the file name
-//     if (stat_a.st_mtimespec.tv_sec == stat_b.st_mtimespec.tv_sec) {
-//         return strcmp(first->path, second->path);
-//     }
-
-//     return (stat_a.st_mtime > stat_b.st_mtime) ? -1 : 1;
-// }
-// #else
-// LINUX VERSION
-
-
 
 #if defined(__APPLE__) || defined(__MACH__)
+
 int cmp_time(node *first, node *second) {
     struct stat stat_a;
     struct stat stat_b;
@@ -273,7 +198,9 @@ int cmp_time(node *first, node *second) {
 
     return (stat_a.st_mtimespec.tv_sec > stat_b.st_mtimespec.tv_sec) ? -1 : 1;
 }
+
 #elif defined(__linux__)
+
 int cmp_time(node *first, node *second) {
     struct stat stat_a;
     struct stat stat_b;
@@ -295,28 +222,6 @@ int cmp_time(node *first, node *second) {
     #error "OS non pris en charge"
 #endif
 
-// #endif
-
-char *get_date_modification(char *path)
-{
-    struct stat attribut;
-    stat(path, &attribut);
-    char *date_modification = ctime(&attribut.st_mtime);
-    return (date_modification);
-}
-
-bool is_sorted_time(node *head)
-{
-    node *tmp = head;
-    while (tmp->next)
-    {
-        if (cmp_time(tmp, tmp->next) == 1)
-            return (false);
-        tmp = tmp->next;
-    }
-    return (true);
-}
-
 bool is_dir(char *file)
 {
     struct stat st;
@@ -326,7 +231,6 @@ bool is_dir(char *file)
         return (true);
     return (false);
 }
-
 
 static void	swap_files(char **a, char **b)
 {
@@ -343,78 +247,4 @@ bool path_exists(char *path)
     if (stat(path, &buf) == -1)
         return (false);
     return (true);
-}
-
-char	**sort_by_time(char **files)
-{
-	if (!files)
-		return (NULL);
-	int i, j, n = 0;
-	while (files[n])
-		n++;
-	for (i = 0; i < n - 1; i++)
-	{
-		for (j = i + 1; j < n; j++)
-		{
-			struct stat stat_i, stat_j;
-			if (stat(files[i], &stat_i) == -1)
-				return (NULL);
-			if (stat(files[j], &stat_j) == -1)
-				return (NULL);
-            #if defined(__APPLE__)
-            if (stat_i.st_mtimespec.tv_sec < stat_j.st_mtimespec.tv_sec ||
-                (stat_i.st_mtimespec.tv_sec == stat_j.st_mtimespec.tv_sec && stat_i.st_mtimespec.tv_nsec < stat_j.st_mtimespec.tv_nsec))
-                swap_files(&files[i], &files[j]);
-            #else
-			if (stat_i.st_mtime < stat_j.st_mtime ||
-				(stat_i.st_mtime == stat_j.st_mtime && stat_i.st_mtim.tv_nsec < stat_j.st_mtim.tv_nsec))
-				swap_files(&files[i], &files[j]);
-            #endif
-		}
-	}
-	return (files);
-}
-
-
-
-char **reverse_order(char **files)
-{
-    int i = 0;
-    int j = 0;
-    char *temp;
-    while (files[i])
-        i++;
-    i--;
-    while (j < i)
-    {
-        temp = files[j];
-        files[j] = files[i];
-        files[i] = temp;
-        j++;
-        i--;
-    }
-    return (files);
-}
-
-char **sort_by_alphabetical_order(char **files)
-{
-    int i = 0;
-    int j = 0;
-    char *temp;
-    while (files[i])
-        i++;
-    i--;
-    while (j < i)
-    {
-        if (ft_strcmp(files[j], files[j + 1]) > 0)
-        {
-            temp = files[j];
-            files[j] = files[j + 1];
-            files[j + 1] = temp;
-            j = 0;
-        }
-        else
-            j++;
-    }
-    return (files);
 }

@@ -1,11 +1,5 @@
 #include "ft_ls.h"
 
-#include <sys/stat.h>
-#include <pwd.h>
-#include <grp.h>
-#include <time.h>
-#include <string.h>
-
 void file_mode_string(mode_t mode, char *str)
 {
     const char *chars = "rwxrwxrwx";
