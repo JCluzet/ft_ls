@@ -106,6 +106,7 @@ node *find_folder(char *path, char options[6])
     closedir(dir);
     return (head);
 }
+
 void recursive_option(node *head)
 {
     node *tmp = head;
@@ -135,6 +136,7 @@ void recursive_option(node *head)
             // free(iter->name);
             new_node->isDir = iter->isDir;
             new_node->exist = iter->exist;
+            new_node->visited = false;
             new_node->is_scan = false;
             for (int i = 0; i < 6; i++)
                 new_node->options[i] = iter->options[i];
