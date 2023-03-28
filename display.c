@@ -40,6 +40,14 @@ void display_file_details(const char *path, const struct stat *file_stat)
         ft_printf("d");
     else if (S_ISLNK(file_stat->st_mode))
         ft_printf("l");
+    else if (S_ISCHR(file_stat->st_mode))
+        ft_printf("c");
+    else if (S_ISBLK(file_stat->st_mode))
+        ft_printf("b");
+    else if (S_ISFIFO(file_stat->st_mode))
+        ft_printf("p");
+    else if (S_ISSOCK(file_stat->st_mode))
+        ft_printf("s");
     else
         ft_printf("-");
     ft_printf("%s ", file_mode);
