@@ -52,6 +52,7 @@ void recursive_option(node *head);
 // UTILS FUNCTIONS
 int ft_strcmp(char *s1, char *s2);
 void ft_putstr(char *str);
+char *ft_strchr(const char *s, int c);
 void ft_putnbr(int n);
 void ft_putchar(char c);
 int ft_strlen(const char *str);

@@ -117,7 +117,12 @@ void display_file(node *file, bool long_listing)
         ft_printf("%s", RED);
     else if (S_ISLNK(file_stat.st_mode))
         ft_printf("%s", VIOLET);
-    ft_printf("%s", file->name);
+
+    // if the file->name contain a space or special character we need to put it in quotes
+    if ((ft_strchr(file->name, ' ') || ft_strchr(file->name, '\t')) && !long_listing)
+        ft_printf("\'%s\'", file->name);
+    else
+        ft_printf("%s", file->name);
     ft_printf("%s", RESET);
 
     // display link if there is one
@@ -152,10 +157,13 @@ void display_directories(node *head, bool show_name, bool long_listing)
     {
         if (tmp->exist && tmp->isDir)
         {
-            if (show_name)
-                ft_printf("%s:\n", tmp->path);
-            else if (i > 0)
-                ft_printf("%s:\n", tmp->path);
+            if (show_name || i > 0)
+            {
+                if (ft_strchr(tmp->path, ' ') || ft_strchr(tmp->path, '\t'))
+                    ft_printf("\'%s\'", tmp->path);
+                else
+                    ft_printf("%s:\n", tmp->path);
+            }
 
             node *folder = find_folder(tmp->path, tmp->options);
             folder = sort_files(folder);
