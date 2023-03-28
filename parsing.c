@@ -40,6 +40,7 @@ node *parsing(char **argv, int argc)
                 {
                     ft_printf("ls: illegal option -- %c\n", argv[i][j]);
                     ft_printf("usage: ./ft_ls [-Ralrt] [file ...]\n");
+                    exit(2);
                 }
                 else
                 {
