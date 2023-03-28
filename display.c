@@ -16,6 +16,34 @@ void file_mode_string(mode_t mode, char *str)
     str[9] = '\0';
 }
 
+bool ft_ispunct(int c) {
+    return (c >= 33 && c <= 47) || (c >= 58 && c <= 64) || (c >= 91 && c <= 96) || (c >= 123 && c <= 126);
+}
+
+bool ft_isprint(int c) {
+    return (c >= 32 && c <= 126);
+}
+
+bool should_quote(const char *folder_name) {
+    for (size_t i = 0; i < strlen(folder_name); ++i) {
+        // Vérifier si le caractère est non imprimable
+        if (!ft_isprint(folder_name[i])) {
+            return true;
+        }
+
+        // Vérifier si le caractère est un espace
+        if (folder_name[i] == ' ') {
+            return true;
+        }
+
+        // Vérifier si le caractère est un caractère spécial
+        if (ft_ispunct(folder_name[i]) && folder_name[i] != '.' && folder_name[i] != '_' && folder_name[i] != '-') {
+            return true;
+        }
+    }
+    return false;
+}
+
 int ft_numlonglen(unsigned long long n)
 {
     int len = 0;
@@ -119,7 +147,7 @@ void display_file(node *file, bool long_listing)
         ft_printf("%s", VIOLET);
 
     // if the file->name contain a space or special character we need to put it in quotes
-    if ((ft_strchr(file->name, ' ') || ft_strchr(file->name, '\t')) && !long_listing)
+    if (should_quote(file->name))
         ft_printf("\'%s\'", file->name);
     else
         ft_printf("%s", file->name);
