@@ -19,6 +19,7 @@
 #define RED "\033[1;32m"
 #endif
 #define RESET "\033[0m"
+#define VIOLET "\033[0;35m"
 
 typedef struct node
 {

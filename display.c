@@ -38,6 +38,8 @@ void display_file_details(const char *path, const struct stat *file_stat)
     file_mode[10] = '\0';
     if (S_ISDIR(file_stat->st_mode))
         ft_printf("d");
+    else if (S_ISLNK(file_stat->st_mode))
+        ft_printf("l");
     else
         ft_printf("-");
     ft_printf("%s ", file_mode);
@@ -140,12 +142,32 @@ void display_directories(node *head, bool show_name, bool long_listing)
                     }
                 }
 
+                struct stat file_stat;
+                lstat(folder->path, &file_stat);
                 if (folder->isDir)
                     ft_printf("%s", BLUE);
                 else if (is_executable(folder->path))
                     ft_printf("%s", RED);
+                else if (S_ISLNK(file_stat.st_mode))
+                    ft_printf("%s", VIOLET);
                 ft_printf("%s", folder->name);
                 ft_printf("%s", RESET);
+
+                // display link if there is one
+                if (long_listing)
+                {
+                    if (lstat(folder->path, &file_stat) == 0)
+                    {
+                        if (S_ISLNK(file_stat.st_mode))
+                        {
+                            char link[1024];
+                            int link_size = readlink(folder->path, link, sizeof(link));
+                            link[link_size] = '\0';
+                            if (link_size != -1)
+                                ft_printf(" -> %s", link);
+                        }
+                    }
+                }
 
                 if (long_listing)
                     ft_printf("\n");
