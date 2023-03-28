@@ -203,7 +203,7 @@ void display_directories(node *head, bool show_name, bool long_listing)
             // if there is no permission to access the directory we display an error
             if (access(tmp->path, R_OK) != 0 || opendir(tmp->path) == NULL)
             {
-                ft_printf("ft_ls: cannot open directory '%s': Permission denied", tmp->path);
+                ft_printf("ft_ls: cannot open directory '%s': Permission denied\n", tmp->path);
                 tmp = tmp->next;
                 continue;
             }
