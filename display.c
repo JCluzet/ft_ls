@@ -160,7 +160,7 @@ void display_directories(node *head, bool show_name, bool long_listing)
             if (show_name || i > 0)
             {
                 if (ft_strchr(tmp->path, ' ') || ft_strchr(tmp->path, '\t'))
-                    ft_printf("\'%s\'", tmp->path);
+                    ft_printf("\'%s\':\n", tmp->path);
                 else
                     ft_printf("%s:\n", tmp->path);
             }
