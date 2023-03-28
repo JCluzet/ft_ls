@@ -204,7 +204,7 @@ void display_not_found(node *head)
     while (tmp)
     {
         if (!tmp->exist)
-            ft_printf("ls: %s: No such file or directory\n", tmp->name);
+            ft_printf("ft_ls: %s: No such file or directory\n", tmp->name);
         tmp = tmp->next;
     }
 }
