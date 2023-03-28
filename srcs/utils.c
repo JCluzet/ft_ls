@@ -1,4 +1,4 @@
-#include "ft_ls.h"
+#include "../inc/ft_ls.h"
 
 char *ft_strdup(const char *s)
 {
@@ -245,15 +245,6 @@ bool is_dir(char *file)
     if (S_ISDIR(st.st_mode))
         return (true);
     return (false);
-}
-
-static void swap_files(char **a, char **b)
-{
-    char *tmp;
-
-    tmp = *a;
-    *a = *b;
-    *b = tmp;
 }
 
 bool path_exists(char *path)

@@ -1,4 +1,4 @@
-#include "ft_ls.h"
+#include "../inc/ft_ls.h"
 
 void add_node(node **head, node *new)
 {

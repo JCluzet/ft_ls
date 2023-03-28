@@ -9,17 +9,17 @@
 
 NAME        := ft_ls
 CC        := gcc
-FLAGS    := 
+FLAGS    := -Wall -Wextra -Werror 
 ################################################################################
 #                                 PROGRAM'S SRCS                               #
 ################################################################################
 
-SRCS        := 			main.c \
-						utils.c \
-						ft_printf.c \
-						parsing.c \
-						display.c \
-						sort.c \
+SRCS        :=      srcs/parsing.c \
+                          srcs/display.c \
+                          srcs/sort.c \
+                          srcs/ft_printf.c \
+                          srcs/utils.c \
+                          srcs/main.c \
                           
 OBJS        := $(SRCS:.c=.o)
 
@@ -41,7 +41,7 @@ RM		    := rm -f
 
 ${NAME}:	${OBJS}
 			@echo "$(GREEN)Compilation ${CLR_RMV}of ${YELLOW}$(NAME) ${CLR_RMV}..."
-			${CC} ${FLAGS} -o ${NAME} ${SRCS}
+			${CC} ${FLAGS} -o ${NAME} ${OBJS}
 			@echo "$(GREEN)$(NAME) created[0m ✔️"
 
 all:		${NAME}

@@ -1,4 +1,4 @@
-#include "ft_ls.h"
+#include "../inc/ft_ls.h"
 
 // fill details about files
 void treat_files(node *head)
@@ -104,7 +104,6 @@ node *find_folder(char *path, char options[6])
 void recursive_option(node *head)
 {
     node *tmp = head;
-    char *path = NULL;
     node *last_node = NULL;
 
     while (tmp && tmp->visited)

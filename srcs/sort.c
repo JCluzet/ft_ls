@@ -1,4 +1,4 @@
-#include "ft_ls.h"
+#include "../inc/ft_ls.h"
 
 node *sort_files(node *head)
 {

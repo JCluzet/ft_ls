@@ -1,4 +1,4 @@
-#include "ft_ls.h"
+#include "../inc/ft_ls.h"
 
 int ft_numlen(unsigned long long n)
 {

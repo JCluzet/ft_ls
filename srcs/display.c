@@ -1,4 +1,4 @@
-#include "ft_ls.h"
+#include "../inc/ft_ls.h"
 
 void file_mode_string(mode_t mode, char *str)
 {
@@ -16,19 +16,25 @@ void file_mode_string(mode_t mode, char *str)
     str[9] = '\0';
 }
 
-bool ft_isprint(int c) {
+bool ft_isprint(int c)
+{
     return (c >= 32 && c <= 126);
 }
 
-bool should_quote(const char *folder_name) {
-    for (size_t i = 0; i < strlen(folder_name); ++i) {
-        if (!ft_isprint(folder_name[i])) {
+bool should_quote(const char *folder_name)
+{
+    for (size_t i = 0; i < strlen(folder_name); ++i)
+    {
+        if (!ft_isprint(folder_name[i]))
+        {
             return true;
         }
-        if (folder_name[i] == ' ') {
+        if (folder_name[i] == ' ')
+        {
             return true;
         }
-        if (folder_name[i] == '!' || folder_name[i] == '$' || folder_name[i] == '&') {
+        if (folder_name[i] == '!' || folder_name[i] == '$' || folder_name[i] == '&')
+        {
             return true;
         }
     }
@@ -56,7 +62,7 @@ char ft_tolower(char c)
     return (c);
 }
 
-void display_file_details(const char *path, const struct stat *file_stat)
+void display_file_details(const struct stat *file_stat)
 {
     char file_mode[11];
     file_mode_string(file_stat->st_mode, file_mode);
@@ -124,7 +130,7 @@ void display_file(node *file, bool long_listing)
         struct stat file_stat;
         if (lstat(file->path, &file_stat) == 0)
         {
-            display_file_details(file->path, &file_stat);
+            display_file_details(&file_stat);
         }
     }
 
@@ -176,6 +182,13 @@ void display_directories(node *head, bool show_name, bool long_listing)
     {
         if (tmp->exist && tmp->isDir)
         {
+            // if there is no permission to access the directory we display an error
+            if (access(tmp->path, R_OK) != 0 || opendir(tmp->path) == NULL)
+            {
+                ft_printf("ft_ls: cannot open directory '%s': Permission denied", tmp->path);
+                tmp = tmp->next;
+                continue;
+            }
             if (show_name || i > 0)
             {
                 if (ft_strchr(tmp->path, ' ') || ft_strchr(tmp->path, '\t'))
@@ -221,7 +234,6 @@ void display_directories(node *head, bool show_name, bool long_listing)
                 display_file(folder, long_listing);
                 folder = folder->next;
             }
-
 
             if (folder_exist && !long_listing)
                 ft_printf("\n");
