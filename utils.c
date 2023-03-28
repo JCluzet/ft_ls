@@ -140,16 +140,22 @@ char *ft_strjoin(char *s1, char *s2)
     char *str;
     int i = 0;
     int j = 0;
-    int len = ft_strlen(s1) + ft_strlen(s2);
+    int len;
+    if (s1 == NULL)
+        len = ft_strlen(s2);
+    else if (s2 == NULL)
+        len = ft_strlen(s1);
+    else
+        len = ft_strlen(s1) + ft_strlen(s2);
     str = (char *)malloc(sizeof(char) * (len + 1));
     if (str == NULL)
         return (NULL);
-    while (s1[i])
+    while (s1 && s1[i])
     {
         str[i] = s1[i];
         i++;
     }
-    while (s2[j])
+    while (s2 && s2[j])
     {
         str[i] = s2[j];
         i++;
@@ -158,6 +164,7 @@ char *ft_strjoin(char *s1, char *s2)
     str[i] = '\0';
     return (str);
 }
+
 
 // is_executable function
 bool is_executable(char *path)
@@ -182,17 +189,18 @@ bool is_in(char *str, char c)
     return (false);
 }
 
-
 #if defined(__APPLE__) || defined(__MACH__)
 
-int cmp_time(node *first, node *second) {
+int cmp_time(node *first, node *second)
+{
     struct stat stat_a;
     struct stat stat_b;
 
     lstat(first->path, &stat_a);
     lstat(second->path, &stat_b);
 
-    if (stat_a.st_mtimespec.tv_sec == stat_b.st_mtimespec.tv_sec) {
+    if (stat_a.st_mtimespec.tv_sec == stat_b.st_mtimespec.tv_sec)
+    {
         return strcmp(first->path, second->path);
     }
 
@@ -201,15 +209,18 @@ int cmp_time(node *first, node *second) {
 
 #elif defined(__linux__)
 
-int cmp_time(node *first, node *second) {
+int cmp_time(node *first, node *second)
+{
     struct stat stat_a;
     struct stat stat_b;
 
     lstat(first->path, &stat_a);
     lstat(second->path, &stat_b);
 
-    if (stat_a.st_mtim.tv_sec == stat_b.st_mtim.tv_sec) {
-        if (stat_a.st_mtim.tv_nsec == stat_b.st_mtim.tv_nsec) {
+    if (stat_a.st_mtim.tv_sec == stat_b.st_mtim.tv_sec)
+    {
+        if (stat_a.st_mtim.tv_nsec == stat_b.st_mtim.tv_nsec)
+        {
             return strcmp(first->path, second->path);
         }
         return (stat_a.st_mtim.tv_nsec > stat_b.st_mtim.tv_nsec) ? -1 : 1;
@@ -219,7 +230,7 @@ int cmp_time(node *first, node *second) {
 }
 
 #else
-    #error "OS non pris en charge"
+#error "OS non pris en charge"
 #endif
 
 bool is_dir(char *file)
@@ -232,13 +243,13 @@ bool is_dir(char *file)
     return (false);
 }
 
-static void	swap_files(char **a, char **b)
+static void swap_files(char **a, char **b)
 {
-	char *tmp;
+    char *tmp;
 
-	tmp = *a;
-	*a = *b;
-	*b = tmp;
+    tmp = *a;
+    *a = *b;
+    *b = tmp;
 }
 
 bool path_exists(char *path)
