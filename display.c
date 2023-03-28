@@ -7,8 +7,15 @@ void file_mode_string(mode_t mode, char *str)
     {
         str[i] = (mode & (1 << (8 - i))) ? chars[i] : '-';
     }
+    if (mode & S_ISUID)
+        str[2] = (mode & S_IXUSR) ? 's' : 'S';
+    if (mode & S_ISGID)
+        str[5] = (mode & S_IXGRP) ? 's' : 'S';
+    if (mode & S_ISVTX)
+        str[8] = (mode & S_IXOTH) ? 't' : 'T';
     str[9] = '\0';
 }
+
 
 int ft_numlonglen(unsigned long long n)
 {
