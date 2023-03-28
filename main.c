@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
         }
     }
     // display syntax
-    if (there_is_files)
+    if (there_is_files && !is_in(head->options, 'l'))
         ft_printf("\n");
     if (there_is_files && there_is_directories)
         ft_printf("\n");

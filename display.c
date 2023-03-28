@@ -16,7 +16,6 @@ void file_mode_string(mode_t mode, char *str)
     str[9] = '\0';
 }
 
-
 int ft_numlonglen(unsigned long long n)
 {
     int len = 0;
@@ -63,7 +62,7 @@ void display_file_details(const char *path, const struct stat *file_stat)
         ft_printf(" ");
     ft_printf("%ld ", (unsigned long)file_stat->st_nlink);
     ft_printf("%s %s ", getpwuid(file_stat->st_uid)->pw_name, getgrgid(file_stat->st_gid)->gr_name);
-   
+
     space = 9 - ft_numlonglen(file_stat->st_size);
 
     while (space-- && space > 0)
@@ -97,6 +96,50 @@ void free_list(node *head)
         free(tmp->name);
         free(tmp);
     }
+}
+
+void display_file(node *file, bool long_listing)
+{
+    if (long_listing)
+    {
+        struct stat file_stat;
+        if (lstat(file->path, &file_stat) == 0)
+        {
+            display_file_details(file->path, &file_stat);
+        }
+    }
+
+    struct stat file_stat;
+    lstat(file->path, &file_stat);
+    if (file->isDir)
+        ft_printf("%s", BLUE);
+    else if (is_executable(file->path))
+        ft_printf("%s", RED);
+    else if (S_ISLNK(file_stat.st_mode))
+        ft_printf("%s", VIOLET);
+    ft_printf("%s", file->name);
+    ft_printf("%s", RESET);
+
+    // display link if there is one
+    if (long_listing)
+    {
+        if (lstat(file->path, &file_stat) == 0)
+        {
+            if (S_ISLNK(file_stat.st_mode))
+            {
+                char link[1024];
+                int link_size = readlink(file->path, link, sizeof(link));
+                link[link_size] = '\0';
+                if (link_size != -1)
+                    ft_printf(" -> %s", link);
+            }
+        }
+    }
+
+    if (long_listing)
+        ft_printf("\n");
+    else
+        ft_printf(" ");
 }
 
 void display_directories(node *head, bool show_name, bool long_listing)
@@ -140,7 +183,7 @@ void display_directories(node *head, bool show_name, bool long_listing)
                 else
 #if defined(__APPLE__) || defined(__MACH__)
                     ft_printf("total %ld\n", total_blocks);
-                    #else
+#else
                     ft_printf("total %ld\n", total_blocks / 2);
 #endif
             }
@@ -148,49 +191,11 @@ void display_directories(node *head, bool show_name, bool long_listing)
             // Display the directory content
             while (folder)
             {
-                if (long_listing)
-                {
-                    struct stat file_stat;
-                    if (lstat(folder->path, &file_stat) == 0)
-                    {
-                        display_file_details(folder->path, &file_stat);
-                    }
-                }
-
-                struct stat file_stat;
-                lstat(folder->path, &file_stat);
-                if (folder->isDir)
-                    ft_printf("%s", BLUE);
-                else if (is_executable(folder->path))
-                    ft_printf("%s", RED);
-                else if (S_ISLNK(file_stat.st_mode))
-                    ft_printf("%s", VIOLET);
-                ft_printf("%s", folder->name);
-                ft_printf("%s", RESET);
-
-                // display link if there is one
-                if (long_listing)
-                {
-                    if (lstat(folder->path, &file_stat) == 0)
-                    {
-                        if (S_ISLNK(file_stat.st_mode))
-                        {
-                            char link[1024];
-                            int link_size = readlink(folder->path, link, sizeof(link));
-                            link[link_size] = '\0';
-                            if (link_size != -1)
-                                ft_printf(" -> %s", link);
-                        }
-                    }
-                }
-
-                if (long_listing)
-                    ft_printf("\n");
-                else
-                    ft_printf(" ");
-
+                display_file(folder, long_listing);
                 folder = folder->next;
             }
+
+
             if (folder_exist && !long_listing)
                 ft_printf("\n");
             if (tmp->next)
@@ -208,7 +213,7 @@ void display_files(node *head)
     while (tmp)
     {
         if (tmp->exist && !tmp->isDir)
-            ft_printf("%s ", tmp->name);
+            display_file(tmp, is_in(tmp->options, 'l'));
         tmp = tmp->next;
     }
 }
