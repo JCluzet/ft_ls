@@ -201,7 +201,11 @@ int cmp_time(node *first, node *second)
 
     if (stat_a.st_mtimespec.tv_sec == stat_b.st_mtimespec.tv_sec)
     {
-        return strcmp(first->path, second->path);
+        if (stat_a.st_mtimespec.tv_nsec == stat_b.st_mtimespec.tv_nsec)
+        {
+            return strcmp(first->path, second->path);
+        }
+        return (stat_a.st_mtimespec.tv_nsec > stat_b.st_mtimespec.tv_nsec) ? -1 : 1;
     }
 
     return (stat_a.st_mtimespec.tv_sec > stat_b.st_mtimespec.tv_sec) ? -1 : 1;
