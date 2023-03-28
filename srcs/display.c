@@ -86,7 +86,19 @@ void display_file_details(const struct stat *file_stat)
     while (space-- && space > 0)
         ft_printf(" ");
     ft_printf("%ld ", (unsigned long)file_stat->st_nlink);
-    ft_printf("%s %s ", getpwuid(file_stat->st_uid)->pw_name, getgrgid(file_stat->st_gid)->gr_name);
+struct passwd *pw = getpwuid(file_stat->st_uid);
+if (pw == NULL) {
+    ft_printf("unknown ");
+} else {
+    ft_printf("%s ", pw->pw_name);
+}
+
+struct group *gr = getgrgid(file_stat->st_gid);
+if (gr == NULL) {
+    ft_printf("unknown ");
+} else {
+    ft_printf("%s ", gr->gr_name);
+}
 
     space = 9 - ft_numlonglen(file_stat->st_size);
 
