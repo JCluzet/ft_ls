@@ -195,18 +195,26 @@ void display_directories(node *head, bool show_name, bool long_listing)
     node *tmp = head;
     int i = 0;
     bool folder_exist = false;
+    DIR *dir;
 
     while (tmp)
     {
         if (tmp->exist && tmp->isDir)
         {
             // if there is no permission to access the directory we display an error
-            if (access(tmp->path, R_OK) != 0 || opendir(tmp->path) == NULL)
+            if (access(tmp->path, R_OK) != 0)
             {
                 ft_printf("ft_ls: cannot open directory '%s': Permission denied\n", tmp->path);
                 tmp = tmp->next;
                 continue;
             }
+            if ((dir = opendir(tmp->path)) == NULL)
+            {
+                ft_printf("ft_ls: cannot open directory '%s': Permission denied\n", tmp->path);
+                tmp = tmp->next;
+                continue;
+            }
+            closedir(dir);
             if (show_name || i > 0)
             {
                 if (ft_strchr(tmp->path, ' ') || ft_strchr(tmp->path, '\t'))
