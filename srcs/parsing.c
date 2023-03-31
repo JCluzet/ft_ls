@@ -56,6 +56,8 @@ node *parsing(char **argv, int argc)
     if (i == argc)
     {
         current = (node *)malloc(sizeof(node));
+        if (current == NULL)
+            return (NULL);
         current->path = ft_strdup(".");
         current->name = ft_strdup(".");
         current->visited = false;
@@ -72,6 +74,8 @@ node *parsing(char **argv, int argc)
     while (i < argc)
     {
         current = (node *)malloc(sizeof(node));
+        if (current == NULL)
+            return (NULL);
         current->path = ft_strdup(argv[i]);
         current->name = ft_strdup(argv[i]);
         current->visited = false;

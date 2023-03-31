@@ -33,6 +33,8 @@ node *remove_useless_files(node *head)
             if (tmp == NULL)
             {
                 tmp = (node *)malloc(sizeof(node));
+                if (tmp == NULL)
+                    return (NULL);
                 tmp->path = ft_strdup(head->path);
                 tmp->name = ft_strdup(head->name);
                 tmp->isDir = head->isDir;
@@ -47,6 +49,8 @@ node *remove_useless_files(node *head)
                 while (current->next)
                     current = current->next;
                 current->next = (node *)malloc(sizeof(node));
+                if (current->next == NULL)
+                    return (NULL);
                 current->next->path = ft_strdup(head->path);
                 current->next->name = ft_strdup(head->name);
                 for (int i = 0; i < 6; i++)
@@ -78,6 +82,8 @@ node *find_folder(char *path, char options[6])
         if (sd->d_name[0] != '.' || is_in(options, 'a'))
         {
             current = (node *)malloc(sizeof(node));
+            if (current == NULL)
+                return (NULL);
             current->path = ft_strjoin(path, "/");
             char *tmp_path = current->path;
             current->path = ft_strjoin(tmp_path, sd->d_name);
@@ -121,6 +127,8 @@ void recursive_option(node *head)
         if (iter->isDir && ft_strcmp(iter->name, ".") != 0 && ft_strcmp(iter->name, "..") != 0)
         {
             node *new_node = (node *)malloc(sizeof(node));
+            if (new_node == NULL)
+                return;
             new_node->path = ft_strdup(iter->path);
             new_node->name = ft_strdup(iter->name);
             new_node->isDir = iter->isDir;
@@ -217,6 +225,8 @@ int main(int argc, char *argv[])
     if (head)
     {
         tmp = (node *)malloc(sizeof(node));
+        if (tmp == NULL)
+            return (0);
         tmp->path = ft_strdup(head->path);
         tmp->name = ft_strdup(head->name);
         tmp->isDir = head->isDir;
@@ -234,6 +244,8 @@ int main(int argc, char *argv[])
     while (head)
     {
         node *new_node = (node *)malloc(sizeof(node));
+        if (new_node == NULL)
+            return (0);
         new_node->path = ft_strdup(head->path);
         new_node->name = ft_strdup(head->name);
         new_node->isDir = head->isDir;
